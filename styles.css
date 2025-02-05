@@ -1,0 +1,10 @@
+.navbar {
+    /* position: relative;
+    display: flex;
+    padding: 10; */
+    background-color: #333;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}

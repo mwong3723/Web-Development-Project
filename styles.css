@@ -2,9 +2,11 @@
     /* position: relative;
     display: flex;
     padding: 10; */
-    background-color: #333;
+    background-color: #fff;
     overflow: hidden;
     display: flex;
     justify-content: space-around;
     padding: 10px;
+    border-top: 2px solid gray; /*Adds a top and bottom border 3px size*/
+    border-bottom:  2px solid gray;
 }

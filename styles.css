@@ -124,6 +124,17 @@
     padding: 20px;
 }
 
+.google_scholar button{
+        background-color: rgb(208, 103, 5); /* Blue background */
+        color: white; /* White text */
+        padding: 10px 20px; /* Top-bottom and left-right padding */
+        border: none; /* Remove default border */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 26px; /* Adjust font size */
+        cursor: pointer; /* Change cursor to pointer on hover */
+        transition: background-color 0.3s ease; /* Smooth transition effect */
+}
+
 /* Style for related articles */
 .related_articles ul {
     list-style-type: disc;
@@ -141,4 +152,14 @@
 
 .related_articles a:hover {
     color: blue;
+}
+
+.footer {
+    background-color: grey; /* Sets the background color to grey */
+    color: white; /* Sets the text color to white for contrast */
+    padding: 20px; /* Adds padding inside the footer */
+    text-align: center; /* Centers the text inside the footer */
+    position: relative; /* Allows the footer to be positioned relative to the rest of the page */
+    width: 100%; /* Ensures the footer spans the entire width of the page */
+    bottom: 0;
 }

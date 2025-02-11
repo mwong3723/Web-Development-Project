@@ -2,7 +2,6 @@ body {
     font-family: 'Libre Franklin', Arial, sans-serif;
 }
 
-
 .header{
     display: flex;
     justify-content: space-between; /* spaces logo and search bar*/
@@ -11,37 +10,37 @@ body {
     background-color: #fff;
 }
 
-.search_bar{
+.search_bar {
     display: flex;
     align-items: center;
-    background: white;
+    background: #d3d3d3; /* Light gray background */
     padding: 5px;
     border-radius: 25px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: none; /* Remove shadow */
 }
 
-.search_bar input{
+.search_bar input {
     border: none;
     outline: none;
     padding: 10px;
     width: 200px;
     border-radius: 25px 0 0 25px;
-    border: 2px solid black;
-    color: grey;
+    background: #d3d3d3; /* Same gray background */
+    color: black; /* Keep text visible */
 }
 
 .search_bar button {
     border: none;
-    background: white;
+    background: #d3d3d3; /* Match input field */
     color: black;
     padding: 10px;
     cursor: pointer;
     border-radius: 0 25px 25px 0;
-    border: 2px solid black;
+    font-weight: bold;
 }
 
 .search_bar button:hover {
-    background: #0056b3;
+    background: #a9a9a9; /* Slightly darker gray on hover */
 }
 
 .navbar {
@@ -89,7 +88,6 @@ body {
     display: block;
 }
 
-
 .content_container {
     background-color: white; /* Ensure no unwanted background color */
     display: flex;
@@ -135,8 +133,8 @@ body {
     width: 100%;
     visibility: visible;
 }
-
-/* Optional: Change text color slightly on hover */
+ 
+/*Change text color slightly on hover */
 .return_to_faculty_directory a:hover {
     color: darkorange;
 }
@@ -157,7 +155,6 @@ body {
 .professor_photo img {
     width: 100%; /* Make sure the image fits within the div */
     max-width: 200px; /* Limit maximum width */
-    border-radius: 10px; /* Optional: Rounds corners */
 }
 
 /* Style for professor_contact_info */
@@ -167,12 +164,29 @@ body {
     color: black;
 }
 
+.professor_contact_info p:first-of-type {
+    color: orange;
+    font-weight: bold; /* Optional */
+}
+
+#professor_email {
+    color: orange;
+    font-weight: bold; /* Optional: Makes the text stand out */
+}
 /* Style for professor_content */
 .professor_content {
     width: 60%; 
     padding: 20px;
     border: none; /* Ensure no border */
     background: transparent; /* Avoid unwanted background */
+}
+
+.research_areas p{
+    color: orange;
+}
+
+.research_areas p:hover::after{
+    color: orange;
 }
 
 .google_scholar button{
@@ -213,4 +227,37 @@ body {
     position: relative; /* Allows the footer to be positioned relative to the rest of the page */
     width: 100%; /* Ensures the footer spans the entire width of the page */
     bottom: 0;
+}
+
+.footer_links {
+    text-align: center; /* Centers inline and inline-block elements */
+}
+
+.footer_links ul {
+    list-style: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    margin: 0 auto; /* Centers the list */
+    display: inline-block; /* Allows centering with text-align */
+}
+.footer_links li {
+    display: inline; /* Makes list items inline */
+}
+
+
+.school_contact_list_images {
+    text-align: center; /* Centers the heading */
+}
+
+.school_contact_list_images h1 {
+    margin-bottom: 15px; /* Adds space below the heading */
+}
+
+.school_contact_list_images div {
+    display: inline-block; /* Keeps the images in a row */
+    margin: 0 10px; /* Adds spacing between images */
+}
+
+.school_contact_list_images img {
+    width: 40px; /* Adjust size as needed */
+    height: auto;
 }

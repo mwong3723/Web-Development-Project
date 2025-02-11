@@ -4,7 +4,7 @@ body {
 
 .header{
     display: flex;
-    justify-content: space-between; /* spaces logo and search bar*/
+    justify-content: space-between; 
     align-items: center;
     padding: 10px 20px;
     background-color: #fff;
@@ -13,25 +13,24 @@ body {
 .search_bar {
     display: flex;
     align-items: center;
-    background: #d3d3d3; /* Light gray background */
+    background: #d3d3d3; 
     padding: 5px;
     border-radius: 25px;
-    box-shadow: none; /* Remove shadow */
+    box-shadow: none; 
 }
-
 .search_bar input {
     border: none;
     outline: none;
     padding: 10px;
     width: 200px;
     border-radius: 25px 0 0 25px;
-    background: #d3d3d3; /* Same gray background */
-    color: black; /* Keep text visible */
+    background: #d3d3d3;
+    color: black; 
 }
 
 .search_bar button {
     border: none;
-    background: #d3d3d3; /* Match input field */
+    background: #d3d3d3; 
     color: black;
     padding: 10px;
     cursor: pointer;
@@ -40,7 +39,7 @@ body {
 }
 
 .search_bar button:hover {
-    background: #a9a9a9; /* Slightly darker gray on hover */
+    background: #a9a9a9; 
 }
 
 .navbar {
@@ -49,13 +48,13 @@ body {
     display: flex;
     justify-content: space-around;
     padding: 10px;
-    border-top: 2px solid gray; /*Adds a top and bottom border 3px size*/
+    border-top: 2px solid gray; 
     border-bottom:  2px solid gray;
 }
 
 .navbar p {
     color: black;
-    font-weight: bold; /*Bolded*/
+    font-weight: bold;
 }
 
 .dropdown p {
@@ -83,63 +82,39 @@ body {
     background-color: lightgray;
 }
 
-/* Show dropdown on hover */
+
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
 .content_container {
-    background-color: white; /* Ensure no unwanted background color */
+    background-color: white; 
     display: flex;
-    justify-content: center; /* Center content horizontally */
-    align-items: flex-start; /* Align items at the top */
-    gap: 20px; /* Add space between columns */  
+    justify-content: center; 
+    align-items: flex-start; 
+    gap: 20px; 
     padding: 20px;
 }
 
 .left_section {
     width: 25%;
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column; 
+    align-items: center; 
     text-align: center;
 }
-/* Styling for return_to_faculty_directory */
-/* Styling for return_to_faculty_directory */
+
 .return_to_faculty_directory a {
-    text-decoration: none; /* Remove default underline */
-    color: orange; /* Text color */
+    text-decoration: none;
+    color: orange;
     font-weight: bold;
-    text-transform: uppercase;
-    position: relative;
-    transition: color 0.3s ease;
 }
 
-/* Hide underline initially */
-.return_to_faculty_directory a::after {
-    content: ""; 
-    position: absolute;
-    left: 0;
-    bottom: -3px; /* Adjusts underline position */
-    width: 0; /* Initially hidden */
-    height: 2px;
-    background-color: orange;
-    transition: width 0.3s ease;
-    visibility: hidden; /* Ensures it's not visible initially */
+.return_to_faculty_directory a:hover{
+    text-decoration: underline;
+    color:orange;
 }
 
-/* When hovering, the underline expands and becomes visible */
-.return_to_faculty_directory a:hover::after {
-    width: 100%;
-    visibility: visible;
-}
- 
-/*Change text color slightly on hover */
-.return_to_faculty_directory a:hover {
-    color: darkorange;
-}
-
-/* Style for professor_info */
 .professor_info {
     width: 25%; 
     display: flex;
@@ -147,17 +122,15 @@ body {
     align-items: center;
     text-align: center;
     padding: 20px;
-    border: none; /* Ensure no border */
-    background: transparent; /* Avoid unwanted background */
+    border: none; 
+    background: transparent; 
 }
 
-/* Style for professor_photo */
 .professor_photo img {
-    width: 100%; /* Make sure the image fits within the div */
-    max-width: 200px; /* Limit maximum width */
+    width: 100%; 
+    max-width: 200px; 
 }
 
-/* Style for professor_contact_info */
 .professor_contact_info {
     margin-top: 15px;
     font-size: 16px;
@@ -166,41 +139,48 @@ body {
 
 .professor_contact_info p:first-of-type {
     color: orange;
-    font-weight: bold; /* Optional */
+    font-weight: bold; 
 }
 
 #professor_email {
     color: orange;
-    font-weight: bold; /* Optional: Makes the text stand out */
+    font-weight: bold;
 }
-/* Style for professor_content */
+
 .professor_content {
     width: 60%; 
     padding: 20px;
-    border: none; /* Ensure no border */
-    background: transparent; /* Avoid unwanted background */
+    border: none; 
+    background: transparent; 
 }
 
 .research_areas p{
     color: orange;
 }
 
-.research_areas p:hover::after{
+.research_areas p:hover{
     color: orange;
+    text-decoration: underline;
+}
+
+.research_groups p {
+    color: orange;
+}
+.research_groups p:hover {
+    color: orange;
+    text-decoration: underline;
 }
 
 .google_scholar button{
-        background-color: rgb(208, 103, 5); /* Blue background */
-        color: white; /* White text */
-        padding: 10px 20px; /* Top-bottom and left-right padding */
-        border: none; /* Remove default border */
-        border-radius: 10px; /* Rounded corners */
-        font-size: 26px; /* Adjust font size */
-        cursor: pointer; /* Change cursor to pointer on hover */
-        transition: background-color 0.3s ease; /* Smooth transition effect */
+        background-color: rgb(208, 103, 5);
+        color: white; 
+        padding: 10px 20px; 
+        border: none; 
+        border-radius: 10px; 
+        font-size: 26px; 
+      
 }
 
-/* Style for related articles */
 .related_articles ul {
     list-style-type: disc;
     padding-left: 20px;
@@ -212,52 +192,52 @@ body {
 
 .related_articles a {
     text-decoration: none;
-    color: black;
+    color: orange;
 }
 
 .related_articles a:hover {
-    color: blue;
+    color: orange;
+    text-decoration: underline;
 }
 
 .footer {
-    background-color: grey; /* Sets the background color to grey */
-    color: white; /* Sets the text color to white for contrast */
-    padding: 20px; /* Adds padding inside the footer */
-    text-align: center; /* Centers the text inside the footer */
-    position: relative; /* Allows the footer to be positioned relative to the rest of the page */
-    width: 100%; /* Ensures the footer spans the entire width of the page */
+    background-color: grey; 
+    color: white; 
+    padding: 20px; 
+    text-align: center; 
+    position: relative; 
+    width: 100%;
     bottom: 0;
 }
 
 .footer_links {
-    text-align: center; /* Centers inline and inline-block elements */
+    text-align: center;
 }
 
 .footer_links ul {
-    list-style: none; /* Removes bullet points */
-    padding: 0; /* Removes default padding */
-    margin: 0 auto; /* Centers the list */
-    display: inline-block; /* Allows centering with text-align */
+    list-style: none;
+    padding: 0; 
+    margin: 0 auto; 
+    display: inline-block; 
 }
 .footer_links li {
-    display: inline; /* Makes list items inline */
+    display: inline; 
 }
 
-
 .school_contact_list_images {
-    text-align: center; /* Centers the heading */
+    text-align: center; 
 }
 
 .school_contact_list_images h1 {
-    margin-bottom: 15px; /* Adds space below the heading */
+    margin-bottom: 15px; 
 }
 
 .school_contact_list_images div {
-    display: inline-block; /* Keeps the images in a row */
-    margin: 0 10px; /* Adds spacing between images */
+    display: inline-block; 
+    margin: 0 10px;
 }
 
 .school_contact_list_images img {
-    width: 40px; /* Adjust size as needed */
+    width: 40px; 
     height: auto;
 }

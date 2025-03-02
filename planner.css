@@ -1,0 +1,70 @@
+.activities-container {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.activity-item {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    cursor: move;
+    transition: background-color 0.3s;
+}
+
+.activity-item:hover {
+    background-color: #e9ecef;
+}
+
+.activity-item i {
+    margin-right: 0.5rem;
+    color: #4361ee;
+}
+
+.timeline-container {
+    min-height: 200px;
+    border: 2px dashed #dee2e6;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-container.drag-over {
+    background-color: rgba(67, 97, 238, 0.1);
+    border-color: #4361ee;
+}
+
+.itinerary-day {
+    margin-bottom: 2rem;
+}
+
+.scheduled-activity {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.scheduled-activity .time {
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+.scheduled-activity .remove-btn {
+    color: #dc3545;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 10; /* Ensure button stays above draggable area */
+    pointer-events: auto; /* Ensure clicks reach the button */
+}
+
+/* Add a handle for dragging */
+.scheduled-activity .drag-handle {
+    cursor: move;
+    margin-right: 0.5rem;
+    color: #6c757d;
+}

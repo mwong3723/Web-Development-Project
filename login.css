@@ -1,0 +1,34 @@
+/* Auth Pages */
+.nav-pills .nav-link {
+    color: #4361ee;
+    border-radius: 5px;
+    padding: 0.5rem 2rem;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #4361ee;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.form-control:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+}
+
+.btn-outline-primary {
+    border-color: #4361ee;
+    color: #4361ee;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4361ee;
+    border-color: #4361ee;
+}
+
+.social-login-buttons {
+    gap: 1rem;
+}

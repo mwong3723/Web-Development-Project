@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = this.querySelector('input[type="email"]').value;
         const password = this.querySelector('input[type="password"]').value;
         
-        // Here you would typically make an API call to your backend
+        // API call to the backend
         console.log('Login attempt:', { email, password });
         
         // Simulate successful login
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Here you would typically make an API call to your backend
+        // API call to the backend
         console.log('Register attempt:', formData);
         
         // Simulate successful registration

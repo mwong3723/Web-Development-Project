@@ -48,10 +48,16 @@
                 <div class="search-box">
                     <div class="row justify-content-center">
                         <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Where do you want to go?">
-                                <button class="btn btn-success" type="button">Search</button>
-                            </div>
+                            <form action="search-results.html" method="get">
+                                <div class="input-group">
+                                    <input type="text" 
+                                           name="q" 
+                                           class="form-control" 
+                                           placeholder="Where do you want to go?" 
+                                           required>
+                                    <button class="btn btn-success" type="submit">Search</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

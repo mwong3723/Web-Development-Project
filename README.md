@@ -35,7 +35,7 @@ docker compose up
 ```
 2. Sync the Prisma schema with the database schema:
 ```bash
-npx prisma push
+npx prisma db push
 ```
 
 ### Running the Development Server:

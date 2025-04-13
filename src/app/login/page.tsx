@@ -51,7 +51,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <Link href="/" className="flex items-center">
               <MapPin className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold">Trip Planner</span>
+              <span className="ml-2 text-xl font-bold">Travel Planner</span>
             </Link>
           </div>
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
@@ -105,7 +105,13 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button variant="outline" type="button" className="w-full" onClick={() => { }} disabled={isLoading}>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            disabled={isLoading}
+          >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

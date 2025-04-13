@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SessionProvider } from "next-auth/react"
+import { getServerSession } from "next-auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,20 +21,24 @@ export const metadata: Metadata = {
   description: "Research destinations, plan trips, and organize itineraries.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Header />
-          <main className="flex-grow">{children}</main>
-        </ThemeProvider>
+        <SessionProvider session={session}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Header />
+            <main className="flex-grow">{children}</main>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

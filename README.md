@@ -19,14 +19,23 @@ This project uses Docker to manage a local PostgreSQL database for development.
 Create a `.env` file in the root directory of the project and add the following environment variables:
 
 ```properties
+# Database Configuration
 DATABASE_URL="postgresql://admin:password@localhost:5432/dev-db"
-
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=password
 POSTGRES_DB=dev-db
+
+# Authentication (NextAuth.js)
+NEXTAUTH_SECRET="your_random_secret_key"
+
+# Google OAuth (valid values are required for Google sign-in)
+GOOGLE_CLIENT_ID="your_google_client_id"
+GOOGLE_CLIENT_SECRET="your_google_client_secret"
 ```
 
 These values are used to configure the PostgreSQL database and Prisma for development.
+
+> Contact maintainers for existing OAuth values or create in [Google Cloud Console](https://console.cloud.google.com/)
 
 ### Database Setup
 1. Start the PostgreSQL database using Docker:
@@ -63,6 +72,8 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Additional Notes
+
+This project uses NextAuth.js for authentication. For more information, visit the [NextAuth.js documentation](https://next-auth.js.org/).
 
 This project uses reusable UI components from [shadcn UI](https://ui.shadcn.com/).
 

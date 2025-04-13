@@ -9,12 +9,40 @@ import { Separator } from "@/components/ui/separator"
 import { MapPin } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error] = useState("")
-  const [isLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password
+      })
+
+      if (result?.error) {
+        setError("Invalid email or password")
+      } else {
+        router.push("/")
+        router.refresh()
+      }
+    } catch (error) {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
@@ -23,7 +51,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <Link href="/" className="flex items-center">
               <MapPin className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold">Wanderlust</span>
+              <span className="ml-2 text-xl font-bold">Travel Planner</span>
             </Link>
           </div>
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
@@ -32,10 +60,10 @@ export default function LoginPage() {
         <CardContent className="space-y-4">
           {error && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="justify-center">{error}</AlertDescription>
             </Alert>
           )}
-          <form onSubmit={() => { }} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -50,7 +78,8 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+                {/* Link to signup until forgot password functionality is implemented */}
+                <Link href="/signup" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -76,7 +105,13 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button variant="outline" type="button" className="w-full" onClick={() => { }} disabled={isLoading}>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={() => signIn("google", { callbackUrl: "/" })}
+            disabled={isLoading}
+          >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

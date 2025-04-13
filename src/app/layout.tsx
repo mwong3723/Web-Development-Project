@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SessionProvider } from "next-auth/react"
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import SessionProvider from "@/providers/session-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  // See https://github.com/nextauthjs/next-auth/discussions/4255#discussioncomment-7044262
+  // for information on why we get the session this way
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" suppressHydrationWarning>

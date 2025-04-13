@@ -5,8 +5,16 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Menu, X, MapPin } from "lucide-react"
+import { Menu, X, MapPin, User, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSession, signOut } from "next-auth/react"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 // Link map
 const navigation = [
@@ -21,6 +29,7 @@ const navigation = [
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const pathname = usePathname()
+    const { data: session } = useSession()
 
     return (
         <header className="bg-background border-b">
@@ -63,14 +72,42 @@ export default function Header() {
                     ))}
                 </div>
 
-                {/* Auth buttons for larger screens */}
-                <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-                    <Button asChild variant="outline" size="sm">
-                        <Link href="/login">Sign in</Link>
-                    </Button>
-                    <Button asChild size="sm">
-                        <Link href="/signup">Sign up</Link>
-                    </Button>
+                {/* Auth section for larger screens */}
+                <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-x-4">
+                    {session ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="gap-2">
+                                    <User className="h-4 w-4" />
+                                    <span>{session.user?.name || session.user?.email}</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem asChild>
+                                    {/* TODO: Implement profile page */}
+                                    <Link href="/">My Profile</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    {/* TODO: Implement account trips */}
+                                    <Link href="/">My Trips</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => signOut()} className="text-destructive">
+                                    <LogOut className="h-4 w-4 mr-2" />
+                                    Sign out
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <>
+                            <Button asChild variant="outline" size="sm">
+                                <Link href="/login">Sign in</Link>
+                            </Button>
+                            <Button asChild size="sm">
+                                <Link href="/signup">Sign up</Link>
+                            </Button>
+                        </>
+                    )}
                     <ModeToggle />
                 </div>
             </nav>
@@ -110,12 +147,48 @@ export default function Header() {
                                 ))}
                             </div>
                             <div className="py-6 space-y-2">
-                                <Button asChild variant="outline" className="w-full justify-center">
-                                    <Link href="/login">Sign in</Link>
-                                </Button>
-                                <Button asChild className="w-full justify-center">
-                                    <Link href="/signup">Sign up</Link>
-                                </Button>
+                                {session ? (
+                                    <>
+                                        <div className="flex items-center gap-2 px-3 py-2">
+                                            <User className="h-5 w-5" />
+                                            <span className="font-medium">{session.user?.name || session.user?.email}</span>
+                                        </div>
+                                        <Link
+                                            href="/profile"
+                                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-muted-foreground hover:bg-accent"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <Link
+                                            href="/my-trips"
+                                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-muted-foreground hover:bg-accent"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            My Trips
+                                        </Link>
+                                        <Button
+                                            variant="destructive"
+                                            className="w-full justify-center mt-2"
+                                            onClick={() => {
+                                                signOut();
+                                                setMobileMenuOpen(false);
+                                            }}
+                                        >
+                                            <LogOut className="h-4 w-4 mr-2" />
+                                            Sign out
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button asChild variant="outline" className="w-full justify-center">
+                                            <Link href="/login">Sign in</Link>
+                                        </Button>
+                                        <Button asChild className="w-full justify-center">
+                                            <Link href="/signup">Sign up</Link>
+                                        </Button>
+                                    </>
+                                )}
                                 <div className="flex justify-center mt-4">
                                     <ModeToggle />
                                 </div>

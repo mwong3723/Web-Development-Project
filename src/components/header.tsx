@@ -65,10 +65,12 @@ export default function Header() {
 
                 {/* Auth buttons for larger screens */}
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-                    <Button variant="outline" size="sm">
-                        Sign in
+                    <Button asChild variant="outline" size="sm">
+                        <Link href="/login">Sign in</Link>
                     </Button>
-                    <Button size="sm">Sign up</Button>
+                    <Button asChild size="sm">
+                        <Link href="/signup">Sign up</Link>
+                    </Button>
                     <ModeToggle />
                 </div>
             </nav>
@@ -108,10 +110,12 @@ export default function Header() {
                                 ))}
                             </div>
                             <div className="py-6 space-y-2">
-                                <Button variant="outline" className="w-full justify-center">
-                                    Sign in
+                                <Button asChild variant="outline" className="w-full justify-center">
+                                    <Link href="/login">Sign in</Link>
                                 </Button>
-                                <Button className="w-full justify-center">Sign up</Button>
+                                <Button asChild className="w-full justify-center">
+                                    <Link href="/signup">Sign up</Link>
+                                </Button>
                                 <div className="flex justify-center mt-4">
                                     <ModeToggle />
                                 </div>

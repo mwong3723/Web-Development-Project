@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Search, Filter } from "lucide-react"
 import { LocationAutocomplete, LocationOption } from "@/components/LocationAutocomplete"
 
@@ -11,7 +10,6 @@ export default function DestinationFilters() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const [showFilters, setShowFilters] = useState(false)
-    const [searchQuery, setSearchQuery] = useState("")
     const [selectedLocation, setSelectedLocation] = useState<LocationOption | null>(null)
     const [experience, setExperience] = useState("")
     const [accessibility, setAccessibility] = useState("")

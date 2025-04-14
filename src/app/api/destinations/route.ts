@@ -19,6 +19,8 @@ export async function GET(request: NextRequest) {
         const lon = searchParams.get('lon')
         const experience = searchParams.get('experience') || ''
         const accessibility = searchParams.get('accessibility') || ''
+        const page = parseInt(searchParams.get('page') || '1', 10)
+        const limit = parseInt(searchParams.get('limit') || '8', 10)
 
         if (!lat || !lon) {
             return NextResponse.json(
@@ -31,8 +33,9 @@ export async function GET(request: NextRequest) {
         const bias = `proximity:${lon},${lat}`
         const categories = experienceToCategories[experience] || 'tourism.attraction,tourism.sights,natural'
         const conditions = accessibility ? `&conditions=${accessibility}` : ''
+        const offset = (page - 1) * limit
 
-        const url = `${GEOAPIFY_BASE_URL}?categories=${categories}&filter=${filter}&bias=${bias}&limit=20${conditions}&apiKey=${GEOAPIFY_API_KEY}`
+        const url = `${GEOAPIFY_BASE_URL}?categories=${categories}&filter=${filter}&bias=${bias}&limit=${limit}&offset=${offset}${conditions}&apiKey=${GEOAPIFY_API_KEY}`
 
         const res = await fetch(url)
         const data = await res.json()

@@ -1,22 +1,107 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter } from "lucide-react"
+import { LocationAutocomplete, LocationOption } from "@/components/LocationAutocomplete"
 
 export default function DestinationFilters() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
     const [showFilters, setShowFilters] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [selectedLocation, setSelectedLocation] = useState<LocationOption | null>(null)
     const [experience, setExperience] = useState("")
     const [accessibility, setAccessibility] = useState("")
+
+    // Initialize state from URL parameters on component mount
+    useEffect(() => {
+        const locationParam = searchParams.get("location")
+        const coordinatesParam = searchParams.get("coordinates")
+        const experienceParam = searchParams.get("experience")
+        const accessibilityParam = searchParams.get("accessibility")
+
+        if (experienceParam) {
+            setExperience(experienceParam)
+        }
+        
+        if (accessibilityParam) {
+            setAccessibility(accessibilityParam)
+        }
+
+        if (locationParam && coordinatesParam) {
+            const [lat, lon] = coordinatesParam.split(",")
+            setSelectedLocation({
+                formatted: locationParam,
+                lat: parseFloat(lat),
+                lon: parseFloat(lon)
+            })
+        }
+    }, [])
+
+    const handleSearch = () => {
+        if (!selectedLocation) return
+        
+        const params = new URLSearchParams(searchParams.toString())
+        
+        params.set("location", selectedLocation.formatted)
+        params.set("coordinates", `${selectedLocation.lat},${selectedLocation.lon}`)
+        
+        if (experience) {
+            params.set("experience", experience)
+        } else {
+            params.delete("experience")
+        }
+        
+        if (accessibility) {
+            params.set("accessibility", accessibility)
+        } else {
+            params.delete("accessibility")
+        }
+        
+        router.push(`/destinations?${params.toString()}`)
+    }
+
+    const handleFilterReset = () => {
+        setExperience("")
+        setAccessibility("")
+    }
+
+    const handleApplyFilters = () => {
+        const params = new URLSearchParams(searchParams.toString())
+        
+        if (experience) {
+            params.set("experience", experience)
+        } else {
+            params.delete("experience")
+        }
+        
+        if (accessibility) {
+            params.set("accessibility", accessibility)
+        } else {
+            params.delete("accessibility")
+        }
+        
+        router.push(`/destinations?${params.toString()}`)
+    }
 
     return (
         <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search destinations..." className="pl-9" />
+                <div className="flex-grow">
+                    <LocationAutocomplete
+                        selectedLocation={selectedLocation}
+                        onLocationChange={setSelectedLocation}
+                        placeholder="Search for a location..."
+                        className="w-full"
+                    />
                 </div>
+                <Button onClick={handleSearch} className="sm:w-auto w-full">
+                    <Search className="mr-2 h-4 w-4" />
+                    Search
+                </Button>
                 <Button
                     variant="outline"
                     onClick={() => setShowFilters(!showFilters)}
@@ -59,13 +144,10 @@ export default function DestinationFilters() {
                     </div>
 
                     <div className="md:col-span-2 flex justify-end gap-2">
-                        <Button variant="outline" onClick={() => {
-                            setExperience("")
-                            setAccessibility("")
-                        }}>
+                        <Button variant="outline" onClick={handleFilterReset}>
                             Reset
                         </Button>
-                        <Button>Apply Filters</Button>
+                        <Button onClick={handleApplyFilters}>Apply Filters</Button>
                     </div>
                 </div>
             )}

@@ -19,7 +19,7 @@ import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
 import { useDebounce } from "@/hooks/useDebounce"
 
 export interface LocationOption {
-    place_id: string
+    place_id?: string
     formatted: string
     city?: string
     country?: string

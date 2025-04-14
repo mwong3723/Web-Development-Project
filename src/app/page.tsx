@@ -76,54 +76,18 @@ export default function HomePage() {
 
               <TabsContent value={activeTab} className="p-4">
                 <form onSubmit={handleSearch}>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Where to?</label>
-                      <LocationAutocomplete
-                        selectedLocation={destination}
-                        onLocationChange={setDestination}
-                        placeholder="e.g. Paris, Tokyo..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">When?</label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !date && "text-muted-foreground",
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : <span>Select date</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-popover text-popover-foreground border border-border">
-                          <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground">Travelers</label>
-                      <div className="relative">
-                        <Users className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          type="number"
-                          value={travelers}
-                          onChange={(e) => setTravelers(Number.parseInt(e.target.value) || 1)}
-                          min="1"
-                          className="pl-9"
-                        />
-                      </div>
-                    </div>
+                  <div className="space-y-3">
+                    <label className="text-base font-medium text-foreground">Where would you like to explore?</label>
+                    <LocationAutocomplete
+                      selectedLocation={destination}
+                      onLocationChange={setDestination}
+                      placeholder="e.g. Paris, Tokyo..."
+                      className="w-full py-3"
+                    />
                   </div>
 
-                  <Button type="submit" className="w-full mt-4">
-                    <Search className="mr-2 h-4 w-4" />
+                  <Button type="submit" className="w-full mt-6 py-6 text-base">
+                    <Search className="mr-2 h-5 w-5" />
                     Explore {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                   </Button>
                 </form>

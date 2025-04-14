@@ -10,15 +10,7 @@ import { Button } from "@/components/ui/button"
 import { CalendarIcon, Search, Users, MapPin, Compass, Utensils, Home } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-
-interface LocationOption {
-  place_id: string
-  formatted: string
-  city?: string
-  country?: string
-  lat: number
-  lon: number
-}
+import { LocationAutocomplete, LocationOption } from "@/components/LocationAutocomplete"
 
 export default function HomePage() {
   const router = useRouter()
@@ -26,7 +18,7 @@ export default function HomePage() {
   const [date, setDate] = useState<Date>()
   const [endDate] = useState<Date>()
   const [travelers, setTravelers] = useState(1)
-  const [destination] = useState<LocationOption | null>(null)
+  const [destination, setDestination] = useState<LocationOption | null>(null)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,7 +79,11 @@ export default function HomePage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Where to?</label>
-                      <Input placeholder="e.g. Paris, Tokyo..." />
+                      <LocationAutocomplete
+                        selectedLocation={destination}
+                        onLocationChange={setDestination}
+                        placeholder="e.g. Paris, Tokyo..."
+                      />
                     </div>
 
                     <div className="space-y-2">

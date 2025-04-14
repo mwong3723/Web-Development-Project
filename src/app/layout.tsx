@@ -34,12 +34,12 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col antialiased`}
       >
         <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Header />
-            <main className="flex-grow">{children}</main>
+            <main className="flex-grow flex flex-col">{children}</main>
           </ThemeProvider>
         </SessionProvider>
       </body>

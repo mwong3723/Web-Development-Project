@@ -20,7 +20,6 @@ import {
 const navigation = [
     { name: "Home", href: "/" },
     { name: "Destinations", href: "/destinations" },
-    { name: "Activities", href: "/activities" },
     { name: "Food", href: "/food" },
     { name: "Accommodations", href: "/accommodations" },
     { name: "Itinerary Builder", href: "/itinerary-builder" },

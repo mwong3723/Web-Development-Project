@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Heart, MapPin, Loader2 } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import MiniMap from "./mini-map-wrapper"
 
 interface Destination {
-    id: string
     name: string
     description: string
     image: string
@@ -17,6 +17,10 @@ interface Destination {
     reviews?: number
     tags: string[]
     address: string
+    coordinates?: {
+        lat: number
+        lon: number
+    }
 }
 
 export default function DestinationGrid() {
@@ -64,7 +68,6 @@ export default function DestinationGrid() {
 
             // Transform API data format to our component format
             const formattedDestinations = data.features.map((feature: any) => ({
-                id: feature.properties.place_id,
                 name: feature.properties.name || 'Unnamed',
                 description: feature.properties.description ||
                     `${feature.properties.categories?.join(" ")}`,
@@ -72,6 +75,10 @@ export default function DestinationGrid() {
                 tags: feature.properties.categories?.map((cat: string) =>
                     cat.split(".").pop()
                 ) || [],
+                coordinates: {
+                    lat: feature.geometry.coordinates[1],
+                    lon: feature.geometry.coordinates[0]
+                }
             }))
 
             if (isLoadMore) {
@@ -161,9 +168,17 @@ export default function DestinationGrid() {
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-                {destinations.map((destination) => (
-                    <Card key={destination.id} className="overflow-hidden group">
+                {destinations.map((destination, index) => (
+                    <Card key={index} className="overflow-hidden group">
                         <div className="aspect-[4/3] relative overflow-hidden">
+                            {destination.coordinates ? (
+                                <MiniMap
+                                    lat={destination.coordinates.lat}
+                                    lon={destination.coordinates.lon}
+                                />
+                            ) : (
+                                <Skeleton className="h-full w-full" />
+                            )}
                             <button className="absolute top-3 right-3 bg-white/80 p-1.5 rounded-full hover:bg-white dark:bg-gray-800/80 dark:hover:bg-gray-800">
                                 <Heart className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                             </button>

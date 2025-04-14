@@ -12,17 +12,24 @@ export default function HomePage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("destinations")
   const [destination, setDestination] = useState<LocationOption | null>(null)
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-
-    const searchParams = new URLSearchParams()
-
-    if (destination) {
-      searchParams.append("location", destination.formatted)
-      searchParams.append("coordinates", `${destination.lat},${destination.lon}`)
+    
+    // Reset any previous validation errors
+    setValidationError(null)
+  
+    // Check if destination is selected
+    if (!destination) {
+      setValidationError("Please select a location before exploring")
+      return
     }
-
+  
+    const searchParams = new URLSearchParams()
+    searchParams.append("location", destination.formatted)
+    searchParams.append("coordinates", `${destination.lat},${destination.lon}`)
+    
     router.push(`/${activeTab}?${searchParams.toString()}`)
   }
 
@@ -69,6 +76,9 @@ export default function HomePage() {
                       placeholder="e.g. Paris, Tokyo..."
                       className="w-full py-3"
                     />
+                    {validationError && (
+                      <p className="text-sm text-destructive mt-1">{validationError}</p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full mt-6 py-6 text-base">

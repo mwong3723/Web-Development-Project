@@ -31,11 +31,13 @@ NEXTAUTH_SECRET="your_random_secret_key"
 # Google OAuth (valid values are required for Google sign-in)
 GOOGLE_CLIENT_ID="your_google_client_id"
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
+
+GEOAPIFY_API_KEY="you_geoapifyr_api_key"
 ```
 
-These values are used to configure the PostgreSQL database and Prisma for development.
+These values are used to configure the PostgreSQL database, Prisma, external APIs, and authentication flows for development.
 
-> Contact maintainers for existing OAuth values or create in [Google Cloud Console](https://console.cloud.google.com/)
+> Contact maintainers for existing OAuth/geoapify values or create in [Google Cloud Console](https://console.cloud.google.com/) and [Geoapify](https://www.geoapify.com/get-started-with-maps-api/).
 
 ### Database Setup
 1. Start the PostgreSQL database using Docker:

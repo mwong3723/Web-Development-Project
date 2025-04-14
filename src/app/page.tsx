@@ -1,23 +1,16 @@
 "use client"
 
-import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { format } from "date-fns"
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Search, Users, MapPin, Compass, Utensils, Home } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import { Input } from "@/components/ui/input"
+import { Search, MapPin, Utensils, Home } from "lucide-react"
 import { LocationAutocomplete, LocationOption } from "@/components/LocationAutocomplete"
 
 export default function HomePage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("destinations")
-  const [date, setDate] = useState<Date>()
-  const [endDate] = useState<Date>()
-  const [travelers, setTravelers] = useState(1)
   const [destination, setDestination] = useState<LocationOption | null>(null)
 
   const handleSearch = (e: React.FormEvent) => {
@@ -29,10 +22,6 @@ export default function HomePage() {
       searchParams.append("location", destination.formatted)
       searchParams.append("coordinates", `${destination.lat},${destination.lon}`)
     }
-
-    if (date) searchParams.append("date", format(date, "yyyy-MM-dd"))
-    if (endDate) searchParams.append("endDate", format(endDate, "yyyy-MM-dd"))
-    searchParams.append("travelers", travelers.toString())
 
     router.push(`/${activeTab}?${searchParams.toString()}`)
   }
@@ -54,14 +43,10 @@ export default function HomePage() {
           <div className="bg-card backdrop-blur-sm rounded-2xl shadow-2xl ring-1 ring-border/20">
             <Tabs defaultValue="destinations" className="w-full" onValueChange={setActiveTab}>
               <div className="px-4 py-3 border-b border-border/50">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="destinations" className="flex flex-col md:flex-row md:gap-2 items-center">
                     <MapPin className="h-4 w-4" />
                     <span className="hidden sm:inline">Destinations</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="activities" className="flex flex-col md:flex-row md:gap-2 items-center">
-                    <Compass className="h-4 w-4" />
-                    <span className="hidden sm:inline">Activities</span>
                   </TabsTrigger>
                   <TabsTrigger value="food" className="flex flex-col md:flex-row md:gap-2 items-center">
                     <Utensils className="h-4 w-4" />

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,6 +20,8 @@ export default function SignupPage() {
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get("callbackUrl") || "/"
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -41,13 +43,17 @@ export default function SignupPage() {
 
             if (response.ok) {
                 // Sign in after successful registration
-                await signIn("credentials", {
+                const res = await signIn("credentials", {
                     redirect: false,
                     email,
                     password
                 })
-                router.push("/")
-                router.refresh()
+
+                if (res?.ok) {
+                    router.push(callbackUrl)
+                } else {
+                    setError("Account created, but failed to log in.")
+                }
             } else {
                 const data = await response.json()
                 setError(data.message || "Something went wrong")
@@ -133,7 +139,7 @@ export default function SignupPage() {
                         variant="outline"
                         type="button"
                         className="w-full"
-                        onClick={() => signIn("google", { callbackUrl: "/" })}
+                        onClick={() => signIn("google", { callbackUrl })}
                         disabled={isLoading}>
                         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                             <path
@@ -159,7 +165,7 @@ export default function SignupPage() {
                 <CardFooter className="flex justify-center">
                     <p className="text-sm text-muted-foreground">
                         Already have an account?{" "}
-                        <Link href="/login" className="text-primary hover:underline">
+                        <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-primary hover:underline">
                             Sign in
                         </Link>
                     </p>

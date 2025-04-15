@@ -12,12 +12,12 @@ import MiniMap from "./mini-map-wrapper"
 interface Destination {
     name: string
     description: string
-    image: string
+image: string
     rating?: number
     reviews?: number
     tags: string[]
     address: string
-    coordinates?: {
+        coordinates?: {
         lat: number
         lon: number
     }
@@ -36,13 +36,13 @@ export default function DestinationGrid() {
     const fetchDestinations = async (isLoadMore = false) => {
         try {
             if (!isLoadMore) {
-                setInitialLoading(true)
-            } else {
-                setLoading(true)
-            }
+setInitialLoading(true)
+}             else {
+setLoading(true)
+}
             setError(null)
 
-            // Get coordinates from URL
+// Get coordinates from URL
             const coordinates = searchParams.get("coordinates")
             const experience = searchParams.get("experience") || ""
             const accessibility = searchParams.get("accessibility") || ""
@@ -61,8 +61,8 @@ export default function DestinationGrid() {
             const response = await fetch(url)
 
             if (!response.ok) {
-                throw new Error("Failed to fetch destinations")
-            }
+throw new Error("Failed to fetch destinations")
+}
 
             const data = await response.json()
 
@@ -89,10 +89,10 @@ export default function DestinationGrid() {
                 setCurrentPage(1)
             }
 
-            // Check if we have more results to load
+// Check if we have more results to load
             setHasMore(formattedDestinations.length >= limit)
         } catch (err) {
-            console.error("Error fetching destinations:", err)
+console.error("Error fetching destinations:", err)
             setError("Failed to load destinations. Please try again.")
         } finally {
             setLoading(false)
@@ -128,7 +128,7 @@ export default function DestinationGrid() {
                     <Card key={i} className="overflow-hidden">
                         <div className="aspect-[4/3] relative">
                             <Skeleton className="h-full w-full" />
-                        </div>
+</div>
                         <CardContent className="p-4">
                             <Skeleton className="h-6 w-3/4 mb-2" />
                             <Skeleton className="h-4 w-full mb-2" />
@@ -179,7 +179,7 @@ export default function DestinationGrid() {
                             ) : (
                                 <Skeleton className="h-full w-full" />
                             )}
-                            <button className="absolute top-3 right-3 bg-white/80 p-1.5 rounded-full hover:bg-white dark:bg-gray-800/80 dark:hover:bg-gray-800">
+<button className="absolute top-3 right-3 bg-white/80 p-1.5 rounded-full hover:bg-white dark:bg-gray-800/80 dark:hover:bg-gray-800">
                                 <Heart className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                             </button>
                             <div className="absolute bottom-3 left-3 flex flex-wrap gap-1">
@@ -191,9 +191,9 @@ export default function DestinationGrid() {
                             </div>
                         </div>
                         <CardContent className="p-4">
-                            <div className="flex justify-between items-start">
-                                <h3 className="font-bold text-lg">{destination.name}</h3>
-                            </div>
+<div className="flex justify-between items-start">
+                            <h3 className="font-bold text-lg">{destination.name}</h3>
+</div>
                             <div className="flex items-center gap-1 mt-1">
                                 <MapPin className="h-3 w-3 text-muted-foreground" />
                                 <span className="text-sm text-muted-foreground line-clamp-1">{destination.address}</span>
@@ -205,7 +205,7 @@ export default function DestinationGrid() {
                 ))}
             </div>
 
-            {/* Load More Button */}
+{/* Load More Button */}
             {hasMore && (
                 <div className="flex justify-center pt-6">
                     <Button
@@ -226,7 +226,7 @@ export default function DestinationGrid() {
                 </div>
             )}
 
-            {/* Show total count */}
+{/* Show total count */}
             <div className="text-center text-sm text-muted-foreground">
                 Showing {destinations.length} destinations
             </div>

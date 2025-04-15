@@ -23,12 +23,15 @@ export default function ItineraryEditorPage() {
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [dates, setDates] = useState<string[]>([]);
 
+  // Fetch itinerary info
   useEffect(() => {
     const fetchItinerary = async () => {
       const res = await fetch(`/api/itinerary/${itineraryId}`);
       if (!res.ok) return;
       const data = await res.json();
+
       setItineraryTitle(data.title ?? "Untitled Itinerary");
 
       if (data.startDate) {
@@ -38,8 +41,23 @@ export default function ItineraryEditorPage() {
         setEndDate(format(new Date(data.endDate), "yyyy-MM-dd"));
       }
     };
+
     fetchItinerary();
   }, [itineraryId]);
+
+  // Fetch ItineraryDay records
+  const fetchDays = async () => {
+    const res = await fetch(`/api/itinerary/${itineraryId}/days`);
+    if (!res.ok) return;
+    const data = await res.json();
+    setDates(data.map((d: { date: string }) => format(new Date(d.date), "yyyy-MM-dd")));
+  };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchDays();
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     if (isEditingTitle && inputRef.current) {
@@ -64,6 +82,15 @@ export default function ItineraryEditorPage() {
     }
   };
 
+  const syncDays = async (newStart: string, newEnd: string) => {
+    await fetch(`/api/itinerary/${itineraryId}/days`, {
+      method: "POST",
+      body: JSON.stringify({ startDate: newStart, endDate: newEnd }),
+      headers: { "Content-Type": "application/json" },
+    });
+    fetchDays();
+  };
+
   const handleStartDateChange = async (newDate: string) => {
     setStartDate(newDate);
     await fetch(`/api/itinerary/${itineraryId}`, {
@@ -71,6 +98,7 @@ export default function ItineraryEditorPage() {
       body: JSON.stringify({ startDate: newDate }),
       headers: { "Content-Type": "application/json" },
     });
+    await syncDays(newDate, endDate);
   };
 
   const handleEndDateChange = async (newDate: string) => {
@@ -80,6 +108,7 @@ export default function ItineraryEditorPage() {
       body: JSON.stringify({ endDate: newDate }),
       headers: { "Content-Type": "application/json" },
     });
+    await syncDays(startDate, newDate);
   };
 
   if (itineraryTitle === null || !startDate || !endDate) return null;
@@ -147,6 +176,7 @@ export default function ItineraryEditorPage() {
             endDate={endDate}
             onChangeStartDate={handleStartDateChange}
             onChangeEndDate={handleEndDateChange}
+            dates={dates}
           />
         </div>
       </div>

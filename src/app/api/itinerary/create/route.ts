@@ -1,38 +1,45 @@
-// src/app/api/itinerary/create/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export const POST = async (req: NextRequest) => {
+export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+  });
+
+  if (!user) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
   const { startDate, endDate } = await req.json();
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
+  // Shift to 12:00pm to avoid time zone offset
+  const startDateObj = new Date(`${startDate}T12:00:00`);
+  const endDateObj = new Date(`${endDate}T12:00:00`);
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+  // Create itinerary with default title
+  const itinerary = await prisma.itinerary.create({
+    data: {
+      userId: user.id,
+      title: "Untitled Itinerary",
+      startDate: startDateObj,
+      endDate: endDateObj,
+    },
+  });
 
-    const itinerary = await prisma.itinerary.create({
-      data: {
-        userId: user.id,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-      },
-    });
+  // Create one ItineraryDay for the startDate
+  await prisma.itineraryDay.create({
+    data: {
+      itineraryId: itinerary.id,
+      date: startDateObj,
+    },
+  });
 
-    return NextResponse.json({ id: itinerary.id }, { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  }
-};
+  return NextResponse.json({ id: itinerary.id });
+}

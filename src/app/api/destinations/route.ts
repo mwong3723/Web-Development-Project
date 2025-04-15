@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from 'next/server'
 const GEOAPIFY_API_KEY = process.env.GEOAPIFY_API_KEY
 const GEOAPIFY_BASE_URL = 'https://api.geoapify.com/v2/places'
 
-// Experience to categories map
-const experienceToCategories: Record<string, string> = {
-    cultural: 'heritage,tourism.sights',
-    nature: 'natural,leisure.park,national_park',
-    city: 'tourism.attraction,tourism.sights',
-    family: 'entertainment,leisure.playground',
-    entertainment: 'entertainment',
+// Dietary preferences to category keywords (customize as needed)
+const dietaryToCategories: Record<string, string> = {
+    vegan: 'catering.vegan',
+    vegetarian: 'catering.vegetarian',
+    halal: 'catering.halal',
+    kosher: 'catering.kosher',
+    gluten_free: 'catering.gluten_free',
 }
 
 export async function GET(request: NextRequest) {
@@ -17,8 +17,7 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url)
         const lat = searchParams.get('lat')
         const lon = searchParams.get('lon')
-        const experience = searchParams.get('experience') || ''
-        const accessibility = searchParams.get('accessibility') || ''
+        const dietary = searchParams.get('dietary') || ''
         const page = parseInt(searchParams.get('page') || '1', 10)
         const limit = parseInt(searchParams.get('limit') || '8', 10)
 
@@ -31,20 +30,19 @@ export async function GET(request: NextRequest) {
 
         const filter = `circle:${lon},${lat},5000` // 5km radius
         const bias = `proximity:${lon},${lat}`
-        const categories = experienceToCategories[experience] || 'tourism.attraction,tourism.sights,natural'
-        const conditions = accessibility ? `&conditions=${accessibility}` : ''
+        const categories = dietaryToCategories[dietary] || 'catering.restaurant'
         const offset = (page - 1) * limit
 
-        const url = `${GEOAPIFY_BASE_URL}?categories=${categories}&filter=${filter}&bias=${bias}&limit=${limit}&offset=${offset}${conditions}&apiKey=${GEOAPIFY_API_KEY}`
+        const url = `${GEOAPIFY_BASE_URL}?categories=${categories}&filter=${filter}&bias=${bias}&limit=${limit}&offset=${offset}&apiKey=${GEOAPIFY_API_KEY}`
 
         const res = await fetch(url)
         const data = await res.json()
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Error fetching destinations:', error)
+        console.error('Error fetching food places:', error)
         return NextResponse.json(
-            { error: 'Failed to fetch destinations' },
+            { error: 'Failed to fetch food places' },
             { status: 500 }
         )
     }

@@ -36,13 +36,14 @@ export default function DestinationSidebar() {
         onChange={(e) => setSearch(e.target.value)}
         className="mb-4"
       />
-      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden pr-1 pb-25">
         <div className="flex flex-col space-y-2">
           {results.map((item) => (
             <DraggableDestinationCard
               key={item.properties.place_id}
               name={item.properties.name || item.properties.formatted}
               location={`${item.properties.city || ""}${item.properties.country ? `, ${item.properties.country}` : ""}`}
+              geoapifyPlaceId={item.properties.place_id}
             />
           ))}
         </div>

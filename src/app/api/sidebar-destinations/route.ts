@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(
       `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
         query
-      )}&limit=10&apiKey=${apiKey}`
+      )}&limit=20&apiKey=${apiKey}`
     );
 
     if (!response.ok) throw new Error("Geoapify request failed");

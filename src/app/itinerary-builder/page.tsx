@@ -1,20 +1,46 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { CalendarDays, LogIn } from "lucide-react"
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, LogIn } from "lucide-react";
+import ItineraryContainer from "@/components/itinerary-container";
 
 export default function ItinerariesPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [itineraries, setItineraries] = useState<any[]>([]);
+  const callback = "/itinerary-builder";
 
-  const handleCreate = () => router.push("/itinerary-builder/create")
-  const callback = "/itinerary-builder"
+  const handleCreate = async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const res = await fetch("/api/itinerary/create", {
+      method: "POST",
+      body: JSON.stringify({ startDate: today, endDate: today }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await res.json();
+    if (res.ok && data?.id) {
+      router.push(`/itinerary-builder/${data.id}`);
+    } else {
+      alert("Error creating itinerary.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchItineraries = async () => {
+      const res = await fetch("/api/itinerary/all");
+      const data = await res.json();
+      if (res.ok) setItineraries(data);
+    };
+    fetchItineraries();
+  }, []);
 
   if (status === "loading") {
-    return <div className="text-center py-16">Checking authentication status...</div>
+    return <div className="text-center py-16">Checking authentication status...</div>;
   }
 
   if (!session) {
@@ -45,24 +71,24 @@ export default function ItinerariesPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  // Default (logged-in) "no itineraries" message
   return (
-    <div className="flex-1 flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-4xl space-y-10">
-        <div className="text-center space-y-6">
-          <CalendarDays className="h-10 w-10 mx-auto text-muted-foreground" />
-          <h2 className="text-2xl font-bold">You have no itineraries</h2>
-          <p className="text-muted-foreground">
-            Start planning your next adventure. Create your dream itinerary today!
-          </p>
-          <Button onClick={handleCreate} className="mt-4">
-            + Create Itinerary
-          </Button>
+    <div className="flex-1 px-6 py-16">
+      <div className="w-full max-w-5xl mx-auto space-y-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold">Your Itineraries</h2>
+          <Button onClick={handleCreate}>+ Create Itinerary</Button>
         </div>
+        {itineraries.length === 0 ? (
+          <div className="text-center text-muted-foreground">
+            <p>You have no itineraries yet.</p>
+          </div>
+        ) : (
+          <ItineraryContainer itineraries={itineraries} />
+        )}
       </div>
     </div>
-  )
+  );
 }

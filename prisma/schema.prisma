@@ -53,36 +53,23 @@ model Session {
 }
 
 model Itinerary {
-  id        Int @id @default(autoincrement())
-  title     String
+  id        Int      @id @default(autoincrement())
+  title     String   @default("Untitled Itinerary")
   startDate DateTime
   endDate   DateTime
   userId    Int
-  user      User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  days      ItineraryDay[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dates     DateEntry[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model ItineraryDay {
-  id          Int @id @default(autoincrement())
-  itineraryId Int
+model DateEntry {
+  id          Int        @id @default(autoincrement())
   date        DateTime
-  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
-  activities  ScheduledActivity[]
-}
+  itinerary   Itinerary  @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  itineraryId Int
+  geoapifyPlaceId  String?
 
-model ScheduledActivity {
-  id         Int  @id @default(autoincrement())
-  dayId      Int
-  title      String
-  startTime  DateTime
-  endTime    DateTime
-  placeId    String?
-  address    String?
-  lat        Float?
-  lon        Float?
-  notes      String?
-  tags       String[]  @default([])
-  day        ItineraryDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  @@unique([itineraryId, date])
 }

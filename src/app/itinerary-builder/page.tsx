@@ -10,7 +10,8 @@ export default function ItinerariesPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-  const handleCreate = () => router.push("/itineraries/create")
+  const handleCreate = () => router.push("/itinerary-builder/create")
+  const callback = "/itinerary-builder"
 
   if (status === "loading") {
     return <div className="text-center py-16">Checking authentication status...</div>
@@ -27,14 +28,17 @@ export default function ItinerariesPage() {
           </p>
           <div className="flex flex-col gap-2 mt-4">
             <Button asChild size="lg" className="justify-center">
-              <Link href="/login">
+              <Link href={`/login?callbackUrl=${encodeURIComponent(callback)}`}>
                 <LogIn className="mr-2 h-5 w-5" />
                 Log In
               </Link>
             </Button>
             <p className="text-sm text-muted-foreground">
               Don’t have an account?{" "}
-              <Link href="/signup" className="text-primary underline">
+              <Link
+                href={`/signup?callbackUrl=${encodeURIComponent(callback)}`}
+                className="text-primary underline"
+              >
                 Create one
               </Link>
             </p>

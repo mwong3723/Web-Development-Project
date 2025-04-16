@@ -16,6 +16,11 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
   const days = await prisma.itineraryDay.findMany({
     where: { itineraryId },
     orderBy: { date: "asc" },
+    select: {
+      date: true,
+      geoapifyID: true,
+      color: true,
+    },
   });
 
   return NextResponse.json(days);

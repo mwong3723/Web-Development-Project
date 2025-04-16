@@ -17,22 +17,24 @@ export async function GET(
       where: {
         itineraryId_date: { itineraryId, date: parsedDate },
       },
+      select: {
+        geoapifyID: true,
+        color: true,
+      },
     });
 
     if (!day) {
-      return NextResponse.json([], { status: 200 });
+      return NextResponse.json({}, { status: 200 });
     }
 
-    // Return empty array instead of real data
-    return NextResponse.json([], { status: 200 });
+    return NextResponse.json(day);
   } catch (error) {
-    console.error("Error fetching itinerary items:", error);
+    console.error("Error fetching itinerary day info:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
 }
-
 
 export async function POST(
   req: Request,
@@ -40,35 +42,37 @@ export async function POST(
 ) {
   const { id, date } = await context.params;
   const itineraryId = parseInt(id);
-  const parsedDate = new Date(date);
+  const parsedDate = new Date(date + "T12:00:00");
 
   try {
-    const { name, location, geoapifyPlaceId } = await req.json();
+    const { geoapifyPlaceId, color } = await req.json();
 
-    // Ensure the day exists, but skip item creation
-    await prisma.itineraryDay.upsert({
+    const day = await prisma.itineraryDay.upsert({
       where: {
         itineraryId_date: { itineraryId, date: parsedDate },
+      },
+      update: {
+        geoapifyID: geoapifyPlaceId,
+        ...(color && { color }),
       },
       create: {
         date: parsedDate,
         itineraryId,
+        geoapifyID: geoapifyPlaceId,
+        color: color || undefined,
       },
-      update: {},
     });
 
-    // Return mock item to simulate success
     return NextResponse.json(
-      { name, location, geoapifyPlaceId },
-      { status: 201 }
+      { success: true, updatedDayId: day.id, geoapifyPlaceId, color: day.color },
+      { status: 200 }
     );
   } catch (error) {
-    console.error("Error adding itinerary item:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.error("Error updating itinerary day geoapifyID:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
 }
+
+

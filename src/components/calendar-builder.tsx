@@ -12,7 +12,9 @@ interface CalendarBuilderProps {
   onChangeEndDate: (date: string) => void;
   dates: string[];
   destinationsByDate: Record<string, Array<{ name: string; location: string }>>;
-  lastAddedDestination: {destination: {name: string, location: string}, date: string} | null;
+  geoapifyByDate: Record<string, string>;
+  colorByDate: Record<string, string>;
+  lastAddedDestination: { destination: { name: string; location: string }, date: string } | null;
 }
 
 export default function CalendarBuilder({
@@ -22,6 +24,8 @@ export default function CalendarBuilder({
   onChangeEndDate,
   dates,
   destinationsByDate,
+  geoapifyByDate,
+  colorByDate,
   lastAddedDestination
 }: CalendarBuilderProps) {
   const [dateRange, setDateRange] = useState<string[]>([]);
@@ -31,13 +35,13 @@ export default function CalendarBuilder({
       const start = parseISO(startDate);
       const end = parseISO(endDate);
       const days = [];
-      
+
       let current = start;
       while (current <= end) {
         days.push(format(current, "yyyy-MM-dd"));
         current = addDays(current, 1);
       }
-      
+
       setDateRange(days);
     }
   }, [startDate, endDate]);
@@ -92,10 +96,12 @@ export default function CalendarBuilder({
 
       <div className="grid grid-cols-4 gap-2">
         {dateRange.map((date) => (
-          <CalendarDay 
-            key={date} 
+          <CalendarDay
+            key={date}
             date={date}
             destinations={destinationsByDate[date] || []}
+            geoapifyPlaceId={geoapifyByDate[date]}
+            color={colorByDate[date]}
             showPopup={lastAddedDestination?.date === date}
             popupContent={lastAddedDestination?.destination}
           />

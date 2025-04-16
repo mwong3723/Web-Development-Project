@@ -2,7 +2,8 @@
 
 import { format } from "date-fns";
 import { useDroppable } from "@dnd-kit/core";
-import DestinationCard from "@/components/ui/destination-card";
+import LocationComponent from "@/components/location-component"; // ✅
+
 import { useEffect, useState } from "react";
 
 interface CalendarDayProps {
@@ -10,13 +11,16 @@ interface CalendarDayProps {
   destinations?: Array<{ name: string; location: string }>;
   showPopup?: boolean;
   popupContent?: { name: string; location: string };
+  geoapifyPlaceId?: string;
+  color?: string;
 }
 
 export default function CalendarDay({ 
   date, 
-  destinations = [], 
+  geoapifyPlaceId,
+  color,
   showPopup = false,
-  popupContent
+  popupContent,
 }: CalendarDayProps) {
   const { setNodeRef } = useDroppable({
     id: date,
@@ -41,6 +45,10 @@ export default function CalendarDay({
       className="relative border border-border bg-background rounded p-2 h-60 w-full transition hover:bg-muted/30"
       data-date={date}
     >
+      {geoapifyPlaceId && (
+        <LocationComponent geoapifyID={geoapifyPlaceId} color={color} />
+      )}
+
       {showLocalPopup && (
         <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-3 py-1 rounded-md text-sm whitespace-nowrap z-10">
           Added {popupContent?.name}
@@ -49,11 +57,6 @@ export default function CalendarDay({
       <span className="absolute bottom-2 left-2 text-xs text-muted-foreground">
         {displayDate}
       </span>
-      <div className="space-y-2 mt-8">
-        {destinations.map((dest, index) => (
-          <DestinationCard key={index} name={dest.name} location={dest.location} />
-        ))}
-      </div>
     </div>
   );
 }

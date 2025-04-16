@@ -69,4 +69,6 @@ model ItineraryDay {
   itineraryId Int
   date        DateTime
   itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@unique([itineraryId, date])
 }

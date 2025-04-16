@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import DraggableDestinationCard from "@/components/ui/draggable-destination-card";
+import DraggableDestinationCard from "@/components/draggable-destination-card";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function DestinationSidebar() {

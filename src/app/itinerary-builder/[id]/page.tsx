@@ -6,7 +6,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DestinationSidebar from "@/components/destination-sidebar";
-import DestinationCard from "@/components/ui/destination-card";
+import DestinationCard from "@/components/destination-card";
 import CalendarBuilder from "@/components/calendar-builder";
 import { format } from "date-fns";
 

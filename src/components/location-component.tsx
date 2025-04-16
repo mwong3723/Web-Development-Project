@@ -25,7 +25,7 @@ export default function LocationComponent({
   const [selectedColor, setSelectedColor] = useState<string>(color || colorPalette[0]);
   const [showPalette, setShowPalette] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const componentRef = useRef<HTMLDivElement>(null); // 🆕 for outside click
+  const componentRef = useRef<HTMLDivElement>(null);
 
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${geoapifyID}-${date}`,

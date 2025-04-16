@@ -41,7 +41,7 @@ export default function LocationComponent({
         body: JSON.stringify({
           color: newColor,
           geoapifyPlaceId: geoapifyID,
-          locationLabel, // ✅ keep passing this so backend can retain it if needed
+          locationLabel,
         }),
       });
 

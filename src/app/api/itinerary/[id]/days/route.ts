@@ -20,6 +20,7 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
       date: true,
       geoapifyID: true,
       color: true,
+      locationLabel: true,
     },
   });
 

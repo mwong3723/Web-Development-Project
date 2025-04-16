@@ -98,18 +98,17 @@ export default function ItineraryEditorPage() {
     const newDestinations: Record<string, Destination[]> = {};
     const locationMap: Record<string, string> = {};
 
-
     for (const day of data) {
       const formattedDate = format(new Date(day.date), "yyyy-MM-dd");
-
-      if (day.geoapifyID) geoMap[formattedDate] = day.geoapifyID;
-      if (day.color) colorMap[formattedDate] = day.color;
-      if (day.locationLabel) locationMap[formattedDate] = day.locationLabel;
-
+      
       const itemsRes = await fetch(`/api/itinerary/${itineraryId}/days/${formattedDate}/items`);
       if (itemsRes.ok) {
         newDestinations[formattedDate] = await itemsRes.json();
       }
+
+      if (day.geoapifyID) geoMap[formattedDate] = day.geoapifyID;
+      if (day.color) colorMap[formattedDate] = day.color;
+      if (day.locationLabel) locationMap[formattedDate] = day.locationLabel;
     }
 
     setColorByDate(colorMap);

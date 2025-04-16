@@ -51,7 +51,9 @@ export default function CalendarDay({
         <LocationComponent 
           geoapifyID={geoapifyPlaceId}
           locationLabel={locationLabel}
-          color={color} />
+          color={color}
+          date={date}
+          />
       )}
 
       {showLocalPopup && (

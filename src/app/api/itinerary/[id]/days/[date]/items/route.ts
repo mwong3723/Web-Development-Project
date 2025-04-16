@@ -83,3 +83,27 @@ export async function POST(
     await prisma.$disconnect();
   }
 }
+
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string; date: string }> }
+) {
+  const { id, date } = await context.params;
+  const itineraryId = parseInt(id);
+  const parsedDate = new Date(date + "T12:00:00");
+
+  try {
+    await prisma.itineraryDay.delete({
+      where: {
+        itineraryId_date: { itineraryId, date: parsedDate },
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting itinerary day:", error);
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
+}

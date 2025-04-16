@@ -54,8 +54,8 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
       where: { id: itineraryId },
       data: {
         ...(title && { title }),
-        ...(startDate && { startDate: new Date(startDate) }),
-        ...(endDate && { endDate: new Date(endDate) }),
+        ...(startDate && { startDate: new Date(startDate + "T12:00:00") }),
+        ...(endDate && { endDate: new Date(endDate + "T12:00:00") }),
       },
       select: { id: true, title: true, startDate: true, endDate: true },
     });

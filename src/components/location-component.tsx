@@ -6,6 +6,7 @@ interface LocationComponentProps {
   geoapifyID: string;
   locationLabel: string;
   color?: string;
+  date: string;
 }
 
 const colorPalette = [
@@ -17,41 +18,67 @@ export default function LocationComponent({
   geoapifyID,
   locationLabel,
   color,
+  date,
 }: LocationComponentProps) {
   const [selectedColor, setSelectedColor] = useState<string>(color || colorPalette[0]);
   const [showPalette, setShowPalette] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   useEffect(() => {
     setSelectedColor(color || colorPalette[0]);
   }, [color]);
 
+  const getItineraryContext = () => {
+    const url = window.location.pathname;
+    const match = url.match(/\/itinerary-builder\/(\d+)/);
+    if (!match) return null;
+
+    const itineraryId = match[1];
+    const dateAttr = (document.querySelector(`[data-geo="${geoapifyID}"]`)?.closest("[data-date]") as HTMLElement)?.dataset.date;
+    if (!dateAttr) return null;
+
+    return { itineraryId, dateAttr: date };
+  };
+
   const updateColor = async (newColor: string) => {
-    try {
-      const url = window.location.pathname;
-      const match = url.match(/\/itinerary-builder\/(\d+)/);
-      if (!match) return;
+    const context = getItineraryContext();
+    if (!context) return;
 
-      const itineraryId = match[1];
-      const dateAttr = (document.querySelector(`[data-geo="${geoapifyID}"]`)?.closest("[data-date]") as HTMLElement)?.dataset.date;
-      if (!dateAttr) return;
+    const { itineraryId, dateAttr } = context;
 
-      const res = await fetch(`/api/itinerary/${itineraryId}/days/${dateAttr}/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          color: newColor,
-          geoapifyPlaceId: geoapifyID,
-          locationLabel,
-        }),
-      });
+    const res = await fetch(`/api/itinerary/${itineraryId}/days/${dateAttr}/items`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        color: newColor,
+        geoapifyPlaceId: geoapifyID,
+        locationLabel,
+      }),
+    });
 
-      if (res.ok) {
-        setSelectedColor(newColor);
-      }
-    } catch (err) {
-      console.error("Failed to update color:", err);
+    if (res.ok) {
+      setSelectedColor(newColor);
     }
   };
+
+  const deleteItineraryDay = async () => {
+    const context = getItineraryContext();
+    if (!context) return;
+
+    const { itineraryId, dateAttr } = context;
+
+    const res = await fetch(`/api/itinerary/${itineraryId}/days/${dateAttr}/items`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setIsDeleted(true);
+    } else {
+      console.error("Failed to delete itinerary day");
+    }
+  };
+
+  if (isDeleted) return null;
 
   return (
     <div
@@ -75,6 +102,16 @@ export default function LocationComponent({
               }}
             />
           ))}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteItineraryDay();
+              setShowPalette(false);
+            }}
+            className="col-span-4 mt-2 bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded border border-red-300 hover:bg-red-200 transition"
+          >
+            Delete Day
+          </button>
         </div>
       )}
     </div>

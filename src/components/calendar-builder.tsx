@@ -13,6 +13,7 @@ interface CalendarBuilderProps {
   dates: string[];
   destinationsByDate: Record<string, Array<{ name: string; location: string }>>;
   geoapifyByDate: Record<string, string>;
+  locationLabelByDate: Record<string, string>;
   colorByDate: Record<string, string>;
   lastAddedDestination: { destination: { name: string; location: string }, date: string } | null;
 }
@@ -25,6 +26,7 @@ export default function CalendarBuilder({
   dates,
   destinationsByDate,
   geoapifyByDate,
+  locationLabelByDate,
   colorByDate,
   lastAddedDestination
 }: CalendarBuilderProps) {
@@ -101,6 +103,7 @@ export default function CalendarBuilder({
             date={date}
             destinations={destinationsByDate[date] || []}
             geoapifyPlaceId={geoapifyByDate[date]}
+            locationLabel={locationLabelByDate?.[date] || "Unknown Location"}
             color={colorByDate[date]}
             showPopup={lastAddedDestination?.date === date}
             popupContent={lastAddedDestination?.destination}

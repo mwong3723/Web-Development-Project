@@ -1,48 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 interface LocationComponentProps {
   geoapifyID: string;
+  locationLabel: string;
   color?: string;
 }
 
 const colorPalette = [
-  "#72B8FF", // blue (default)
-  "#9B8FFF", // lavender
-  "#FF9CF0", // pink
-  "#FF7C7C", // coral
-  "#FFB174", // peach
-  "#F6E96B", // soft yellow
-  "#90EFAA", // mint
-  "#71E2F8", // aqua
+  "#72B8FF", "#9B8FFF", "#FF9CF0", "#FF7C7C",
+  "#FFB174", "#F6E96B", "#90EFAA", "#71E2F8",
 ];
 
-export default function LocationComponent({ geoapifyID, color }: LocationComponentProps) {
-  const [locationLabel, setLocationLabel] = useState<string | null>(null);
+export default function LocationComponent({
+  geoapifyID,
+  locationLabel,
+  color,
+}: LocationComponentProps) {
   const [selectedColor, setSelectedColor] = useState<string>(color || colorPalette[0]);
   const [showPalette, setShowPalette] = useState(false);
 
   useEffect(() => {
-    setSelectedColor(color || colorPalette[0]); // 🟢 re-sync when color prop changes
+    setSelectedColor(color || colorPalette[0]);
   }, [color]);
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const res = await fetch(`/api/geoapify-place?place_id=${geoapifyID}`);
-        if (!res.ok) return;
-
-        const data = await res.json();
-        setLocationLabel(data.display_name || "Unknown location");
-      } catch (err) {
-        console.error("Failed to fetch location name:", err);
-        setLocationLabel(null);
-      }
-    };
-
-    fetchLocation();
-  }, [geoapifyID]);
 
   const updateColor = async (newColor: string) => {
     try {
@@ -57,18 +38,20 @@ export default function LocationComponent({ geoapifyID, color }: LocationCompone
       const res = await fetch(`/api/itinerary/${itineraryId}/days/${dateAttr}/items`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ color: newColor, geoapifyPlaceId: geoapifyID }),
+        body: JSON.stringify({
+          color: newColor,
+          geoapifyPlaceId: geoapifyID,
+          locationLabel, // ✅ keep passing this so backend can retain it if needed
+        }),
       });
 
       if (res.ok) {
-        setSelectedColor(newColor); // ✅ Local update for immediate feedback
+        setSelectedColor(newColor);
       }
     } catch (err) {
       console.error("Failed to update color:", err);
     }
   };
-
-  if (!locationLabel) return null;
 
   return (
     <div

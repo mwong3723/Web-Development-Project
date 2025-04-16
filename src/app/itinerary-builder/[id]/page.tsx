@@ -26,7 +26,7 @@ export default function ItineraryEditorPage() {
   const [activeCard, setActiveCard] = useState<Destination | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const [locationLabelByDate, setLocationLabelByDate] = useState<Record<string, string>>({});
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [dates, setDates] = useState<string[]>([]);
@@ -94,14 +94,17 @@ export default function ItineraryEditorPage() {
     setDates(dates);
 
     const geoMap: Record<string, string> = {};
-    const colorMap: Record<string, string> = {}; // ✅ new
+    const colorMap: Record<string, string> = {};
     const newDestinations: Record<string, Destination[]> = {};
+    const locationMap: Record<string, string> = {};
+
 
     for (const day of data) {
       const formattedDate = format(new Date(day.date), "yyyy-MM-dd");
 
       if (day.geoapifyID) geoMap[formattedDate] = day.geoapifyID;
       if (day.color) colorMap[formattedDate] = day.color;
+      if (day.locationLabel) locationMap[formattedDate] = day.locationLabel;
 
       const itemsRes = await fetch(`/api/itinerary/${itineraryId}/days/${formattedDate}/items`);
       if (itemsRes.ok) {
@@ -109,9 +112,10 @@ export default function ItineraryEditorPage() {
       }
     }
 
-    setColorByDate(colorMap); // ✅
+    setColorByDate(colorMap);
     setGeoapifyByDate(geoMap);
     setDestinationsByDate(newDestinations);
+    setLocationLabelByDate(locationMap);
   };
 
   useEffect(() => {
@@ -125,8 +129,9 @@ export default function ItineraryEditorPage() {
 
     if (over?.data?.current?.date) {
       const date = over.data.current.date;
-      const geoapifyPlaceId = active.data.current.geoapifyPlaceId;
-      const color = colorByDate[date] ?? "#72B8FF"; // ✅
+      const { geoapifyPlaceId, location } = active.data.current;
+      const locationLabel = location;
+      const color = colorByDate[date] ?? "#72B8FF";
 
       // Update the UI
       setGeoapifyByDate((prev) => ({
@@ -137,7 +142,11 @@ export default function ItineraryEditorPage() {
       // Persist the change to the backend
       const res = await fetch(`/api/itinerary/${itineraryId}/days/${date}/items`, {
         method: 'POST',
-        body: JSON.stringify({ geoapifyPlaceId, color }), // ✅ include color
+        body: JSON.stringify({
+          geoapifyPlaceId,
+          locationLabel,
+          color,
+        }),
         headers: { 'Content-Type': 'application/json' },
       });
 
@@ -149,6 +158,11 @@ export default function ItineraryEditorPage() {
           return updated;
         });
       }
+
+      setLocationLabelByDate((prev) => ({
+        ...prev,
+        [date]: locationLabel,
+      }));
     }
 
     setActiveCard(null);
@@ -161,6 +175,7 @@ export default function ItineraryEditorPage() {
     <DndContext
       onDragStart={(event) => {
         const { name, location, geoapifyPlaceId } = event.active.data.current || {};
+        const locationLabel = location;
         setActiveCard({ name, location, geoapifyPlaceId });
         setIsDragging(true);
       }}
@@ -218,6 +233,7 @@ export default function ItineraryEditorPage() {
             dates={dates}
             destinationsByDate={destinationsByDate}
             geoapifyByDate={geoapifyByDate}
+            locationLabelByDate={locationLabelByDate}
             lastAddedDestination={lastAddedDestination}
             colorByDate={colorByDate}
           />

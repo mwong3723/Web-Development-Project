@@ -12,12 +12,14 @@ interface CalendarDayProps {
   showPopup?: boolean;
   popupContent?: { name: string; location: string };
   geoapifyPlaceId?: string;
+  locationLabel?: string;
   color?: string;
 }
 
 export default function CalendarDay({ 
   date, 
   geoapifyPlaceId,
+  locationLabel,
   color,
   showPopup = false,
   popupContent,
@@ -46,7 +48,10 @@ export default function CalendarDay({
       data-date={date}
     >
       {geoapifyPlaceId && (
-        <LocationComponent geoapifyID={geoapifyPlaceId} color={color} />
+        <LocationComponent 
+          geoapifyID={geoapifyPlaceId}
+          locationLabel={locationLabel}
+          color={color} />
       )}
 
       {showLocalPopup && (

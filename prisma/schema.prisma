@@ -70,6 +70,7 @@ model ItineraryDay {
   date        DateTime
   itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
   geoapifyID  String?
+  locationLabel String?
   color       String   @default("#72B8FF")
 
   @@unique([itineraryId, date])

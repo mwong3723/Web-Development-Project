@@ -20,6 +20,7 @@ export async function GET(
       select: {
         geoapifyID: true,
         color: true,
+        locationLabel: true,
       },
     });
 
@@ -45,7 +46,7 @@ export async function POST(
   const parsedDate = new Date(date + "T12:00:00");
 
   try {
-    const { geoapifyPlaceId, color } = await req.json();
+    const { geoapifyPlaceId, locationLabel, color } = await req.json(); // ✅ get location label
 
     const day = await prisma.itineraryDay.upsert({
       where: {
@@ -53,26 +54,32 @@ export async function POST(
       },
       update: {
         geoapifyID: geoapifyPlaceId,
+        locationLabel,
         ...(color && { color }),
       },
       create: {
         date: parsedDate,
         itineraryId,
         geoapifyID: geoapifyPlaceId,
+        locationLabel,
         color: color || undefined,
       },
     });
 
     return NextResponse.json(
-      { success: true, updatedDayId: day.id, geoapifyPlaceId, color: day.color },
+      {
+        success: true,
+        updatedDayId: day.id,
+        geoapifyPlaceId,
+        locationLabel: day.locationLabel,
+        color: day.color,
+      },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating itinerary day geoapifyID:", error);
+    console.error("Error updating itinerary day info:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
 }
-
-

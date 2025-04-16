@@ -125,21 +125,38 @@ export default function ItineraryEditorPage() {
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-
+  
     if (over?.data?.current?.date) {
-      const date = over.data.current.date;
-      const { geoapifyPlaceId, location } = active.data.current;
+      const newDate = over.data.current.date;
+      const { geoapifyPlaceId, location, date: oldDate } = active.data.current;
       const locationLabel = location;
-      const color = colorByDate[date] ?? "#72B8FF";
+      const color = colorByDate[newDate] ?? "#72B8FF";
+
+      if (oldDate && oldDate !== newDate) {
+        await fetch(`/api/itinerary/${itineraryId}/days/${oldDate}/items`, {
+          method: "DELETE",
+        });
+
+        setGeoapifyByDate((prev) => {
+          const copy = { ...prev };
+          delete copy[oldDate];
+          return copy;
+        });
+        setLocationLabelByDate((prev) => {
+          const copy = { ...prev };
+          delete copy[oldDate];
+          return copy;
+        });
+      }
 
       // Update the UI
       setGeoapifyByDate((prev) => ({
         ...prev,
-        [date]: geoapifyPlaceId,
+        [newDate]: geoapifyPlaceId,
       }));
 
       // Persist the change to the backend
-      const res = await fetch(`/api/itinerary/${itineraryId}/days/${date}/items`, {
+      const res = await fetch(`/api/itinerary/${itineraryId}/days/${newDate}/items`, {
         method: 'POST',
         body: JSON.stringify({
           geoapifyPlaceId,
@@ -153,14 +170,14 @@ export default function ItineraryEditorPage() {
         // Revert the change if the request fails
         setGeoapifyByDate((prev) => {
           const updated = { ...prev };
-          delete updated[date];
+          delete updated[newDate];
           return updated;
         });
       }
 
       setLocationLabelByDate((prev) => ({
         ...prev,
-        [date]: locationLabel,
+        [newDate]: locationLabel,
       }));
     }
 

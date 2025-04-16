@@ -103,7 +103,7 @@ export default function CalendarBuilder({
             date={date}
             destinations={destinationsByDate[date] || []}
             geoapifyPlaceId={geoapifyByDate[date]}
-            locationLabel={locationLabelByDate?.[date] || "Unknown Location"}
+            locationLabel={locationLabelByDate?.[date] || ""}
             color={colorByDate[date]}
             showPopup={lastAddedDestination?.date === date}
             popupContent={lastAddedDestination?.destination}

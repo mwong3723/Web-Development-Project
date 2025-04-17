@@ -45,7 +45,7 @@ export default function CalendarDay({
   return (
     <div
       ref={setNodeRef}
-      className="relative border border-border bg-background rounded p-2 h-60 w-full transition hover:bg-muted/30"
+      className="relative border border-border bg-background rounded p-2 h-65 w-full transition hover:bg-muted/30"
       data-date={date}
     >
       {geoapifyPlaceId && (

@@ -30,6 +30,18 @@ export default function ItinerariesPage() {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    const res = await fetch(`/api/itinerary/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setItineraries((prev) => prev.filter((item) => item.id !== id));
+    } else {
+      alert("Failed to delete itinerary.");
+    }
+  };
+
   useEffect(() => {
     const fetchItineraries = async () => {
       const res = await fetch("/api/itinerary/all");
@@ -86,7 +98,7 @@ export default function ItinerariesPage() {
             <p>You have no itineraries yet.</p>
           </div>
         ) : (
-          <ItineraryContainer itineraries={itineraries} />
+          <ItineraryContainer itineraries={itineraries} onDelete={handleDelete} />
         )}
       </div>
     </div>

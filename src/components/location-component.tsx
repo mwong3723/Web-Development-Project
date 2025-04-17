@@ -22,7 +22,7 @@ export default function LocationComponent({
   color,
   date,
 }: LocationComponentProps) {
-  const [selectedColor, setSelectedColor] = useState<string>(color || colorPalette[0]);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const componentRef = useRef<HTMLDivElement>(null);
@@ -32,13 +32,13 @@ export default function LocationComponent({
     data: {
       geoapifyPlaceId: geoapifyID,
       location: locationLabel,
-      color,
+      color: selectedColor,
       date,
     },
   });
 
   useEffect(() => {
-    setSelectedColor(color || colorPalette[0]);
+    if (color) setSelectedColor(color);
   }, [color]);
 
   useEffect(() => {
@@ -102,6 +102,21 @@ export default function LocationComponent({
   };
 
   if (isDeleted) return null;
+
+  if (!selectedColor) {
+    return (
+      <div
+        className="absolute top-2 left-2 right-2 px-2 py-4 border-2 border-dashed border-gray-300 rounded flex items-center justify-center text-xs text-gray-500"
+        style={{ height: "56px" }}
+      >
+        <svg className="animate-spin h-4 w-4 mr-2 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        Loading...
+      </div>
+    );    
+  }
 
   return (
     <div

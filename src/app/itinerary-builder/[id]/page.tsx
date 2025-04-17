@@ -130,7 +130,7 @@ export default function ItineraryEditorPage() {
       const newDate = over.data.current.date;
       const { geoapifyPlaceId, location, date: oldDate } = active.data.current;
       const locationLabel = location;
-      const color = colorByDate[newDate] ?? "#72B8FF";
+      const color = colorByDate[oldDate] ?? "#72B8FF";
 
       if (oldDate && oldDate !== newDate) {
         await fetch(`/api/itinerary/${itineraryId}/days/${oldDate}/items`, {
@@ -143,6 +143,12 @@ export default function ItineraryEditorPage() {
           return copy;
         });
         setLocationLabelByDate((prev) => {
+          const copy = { ...prev };
+          delete copy[oldDate];
+          return copy;
+        });
+
+        setColorByDate((prev) => {
           const copy = { ...prev };
           delete copy[oldDate];
           return copy;
@@ -178,6 +184,11 @@ export default function ItineraryEditorPage() {
       setLocationLabelByDate((prev) => ({
         ...prev,
         [newDate]: locationLabel,
+      }));
+
+      setColorByDate((prev) => ({
+        ...prev,
+        [newDate]: color,
       }));
     }
 

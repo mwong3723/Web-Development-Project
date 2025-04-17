@@ -4,20 +4,19 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Trash2, Pencil } from "lucide-react";
 
-export default function ItineraryBox({ itinerary }: { itinerary: any }) {
+export default function ItineraryBox({
+  itinerary,
+  onDelete,
+}: {
+  itinerary: any;
+  onDelete: (id: number) => void;
+}) {
   const router = useRouter();
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this itinerary?")) return;
-
-    const res = await fetch(`/api/itinerary/${itinerary.id}`, {
-      method: "DELETE",
-    });
-
-    if (res.ok) {
-      router.refresh(); // re-fetch updated itinerary list
-    } else {
-      alert("Failed to delete itinerary.");
+  const handleDeleteClick = () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
+    if (confirmDelete) {
+      onDelete(itinerary.id);
     }
   };
 
@@ -32,7 +31,7 @@ export default function ItineraryBox({ itinerary }: { itinerary: any }) {
           <Pencil className="w-4 h-4 mr-1" />
           Edit
         </Button>
-        <Button size="sm" variant="destructive" onClick={handleDelete}>
+        <Button size="sm" variant="destructive" onClick={handleDeleteClick}>
           <Trash2 className="w-4 h-4 mr-1" />
           Delete
         </Button>

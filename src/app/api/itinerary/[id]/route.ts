@@ -66,3 +66,23 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
     return NextResponse.json({ error: "Failed to update itinerary" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const itineraryId = Number(context.params.id);
+
+  try {
+    await prisma.itinerary.delete({
+      where: { id: itineraryId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Failed to delete itinerary:", error);
+    return NextResponse.json({ error: "Deletion failed" }, { status: 500 });
+  }
+}

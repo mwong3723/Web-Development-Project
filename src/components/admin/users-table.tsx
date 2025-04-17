@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -23,97 +23,106 @@ import {
   Trash2,
   UserCog,
   Shield,
+  Loader2,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
-const users = [
-  {
-    id: "user-1",
-    name: "Sarah Johnson",
-    email: "sarah@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2023-01-15",
-    image: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "user-2",
-    name: "Michael Chen",
-    email: "michael@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2023-02-28",
-    image: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "user-3",
-    name: "Emma Wilson",
-    email: "emma@example.com",
-    role: "admin",
-    status: "active",
-    joinedAt: "2022-11-10",
-    image: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "user-4",
-    name: "James Rodriguez",
-    email: "james@example.com",
-    role: "user",
-    status: "inactive",
-    joinedAt: "2023-03-05",
-    image: "/placeholder.svg?height=32&width=32",
-  },
-  {
-    id: "user-5",
-    name: "Olivia Smith",
-    email: "olivia@example.com",
-    role: "user",
-    status: "active",
-    joinedAt: "2023-04-12",
-    image: "/placeholder.svg?height=32&width=32",
-  },
-]
+// Interface for the user data returned from the API
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  image: string;
+}
 
 export function AdminUsersTable() {
-  const [sortBy, setSortBy] = useState<string | null>(null)
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  // Fetch users from the API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/admin/users');
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUsers(data);
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+        setError('Failed to load users. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
-      setSortBy(column)
-      setSortOrder("asc")
+      setSortBy(column);
+      setSortOrder("asc");
     }
-  }
+  };
 
   const getSortIcon = (column: string) => {
-    if (sortBy !== column) return <ChevronsUpDown className="ml-2 h-4 w-4" />
-    return sortOrder === "asc" ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />
-  }
+    if (sortBy !== column) return <ChevronsUpDown className="ml-2 h-4 w-4" />;
+    return sortOrder === "asc" ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />;
+  };
 
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
   const handleSelectAll = () => {
     if (selectedUsers.length === filteredUsers.length) {
-      setSelectedUsers([])
+      setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredUsers.map((u) => u.id))
+      setSelectedUsers(filteredUsers.map((u) => u.id));
     }
-  }
+  };
 
   const handleSelectUser = (id: string) => {
     if (selectedUsers.includes(id)) {
-      setSelectedUsers(selectedUsers.filter((u) => u !== id))
+      setSelectedUsers(selectedUsers.filter((u) => u !== id));
     } else {
-      setSelectedUsers([...selectedUsers, id])
+      setSelectedUsers([...selectedUsers, id]);
     }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2">Loading users...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="mb-4">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
   }
 
   return (
@@ -140,18 +149,6 @@ export function AdminUsersTable() {
               <DropdownMenuItem>All</DropdownMenuItem>
               <DropdownMenuItem>Admin</DropdownMenuItem>
               <DropdownMenuItem>User</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Status <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>All</DropdownMenuItem>
-              <DropdownMenuItem>Active</DropdownMenuItem>
-              <DropdownMenuItem>Inactive</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -193,25 +190,13 @@ export function AdminUsersTable() {
                   {getSortIcon("role")}
                 </div>
               </TableHead>
-              <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
-                <div className="flex items-center">
-                  Status
-                  {getSortIcon("status")}
-                </div>
-              </TableHead>
-              <TableHead className="cursor-pointer" onClick={() => handleSort("joinedAt")}>
-                <div className="flex items-center">
-                  Joined
-                  {getSortIcon("joinedAt")}
-                </div>
-              </TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredUsers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   No users found.
                 </TableCell>
               </TableRow>
@@ -242,27 +227,14 @@ export function AdminUsersTable() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.role === "admin"
-                          ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                          : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                      }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${user.role === "admin"
+                        ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
+                        : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                        }`}
                     >
                       {user.role}
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.status === "active"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-                      }`}
-                    >
-                      {user.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.joinedAt}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

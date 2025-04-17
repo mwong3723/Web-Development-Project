@@ -6,7 +6,7 @@ import { AdminUsersTable } from "@/components/admin/users-table"
 export default function AdminUsers() {
   return (
     <div className="flex flex-col gap-5">
-      <AdminPageHeader heading="Users" text="Manage your website users">
+      <AdminPageHeader heading="Users" text="Manage your users">
         <Button>
           <PlusCircle className="mr-2 h-4 w-4" />
           Add User

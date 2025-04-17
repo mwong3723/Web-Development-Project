@@ -2,8 +2,7 @@
 
 import { format } from "date-fns";
 import { useDroppable } from "@dnd-kit/core";
-import LocationComponent from "@/components/location-component"; // ✅
-
+import LocationComponent from "@/components/location-component";
 import { useEffect, useState } from "react";
 
 interface CalendarDayProps {
@@ -14,6 +13,7 @@ interface CalendarDayProps {
   geoapifyPlaceId?: string;
   locationLabel?: string;
   color?: string;
+  onColorChange: (date: string, color: string) => void;
 }
 
 export default function CalendarDay({ 
@@ -23,6 +23,7 @@ export default function CalendarDay({
   color,
   showPopup = false,
   popupContent,
+  onColorChange,
 }: CalendarDayProps) {
   const { setNodeRef } = useDroppable({
     id: date,
@@ -53,7 +54,8 @@ export default function CalendarDay({
           locationLabel={locationLabel}
           color={color}
           date={date}
-          />
+          onColorChange={onColorChange}
+        />
       )}
 
       {showLocalPopup && (

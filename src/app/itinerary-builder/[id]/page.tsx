@@ -31,7 +31,7 @@ export default function ItineraryEditorPage() {
   const [endDate, setEndDate] = useState("");
   const [dates, setDates] = useState<string[]>([]);
   const [geoapifyByDate, setGeoapifyByDate] = useState<Record<string, string>>({});
-  const [colorByDate, setColorByDate] = useState<Record<string, string>>({}); // ✅ new
+  const [colorByDate, setColorByDate] = useState<Record<string, string>>({});
   const [destinationsByDate, setDestinationsByDate] = useState<Record<string, Destination[]>>({});
   const [lastAddedDestination, setLastAddedDestination] = useState<{ destination: Destination, date: string } | null>(null);
 
@@ -85,6 +85,13 @@ export default function ItineraryEditorPage() {
     });
   };
 
+  const handleColorChange = (date: string, newColor: string) => {
+    setColorByDate((prev) => ({
+      ...prev,
+      [date]: newColor,
+    }));
+  };
+
   const fetchDays = async () => {
     const res = await fetch(`/api/itinerary/${itineraryId}/days`);
     if (!res.ok) return;
@@ -100,7 +107,7 @@ export default function ItineraryEditorPage() {
 
     for (const day of data) {
       const formattedDate = format(new Date(day.date), "yyyy-MM-dd");
-      
+
       const itemsRes = await fetch(`/api/itinerary/${itineraryId}/days/${formattedDate}/items`);
       if (itemsRes.ok) {
         newDestinations[formattedDate] = await itemsRes.json();
@@ -125,7 +132,7 @@ export default function ItineraryEditorPage() {
 
   const handleDragEnd = async (event: any) => {
     const { active, over } = event;
-  
+
     if (over?.data?.current?.date) {
       const newDate = over.data.current.date;
       const { geoapifyPlaceId, location, date: oldDate } = active.data.current;
@@ -155,13 +162,11 @@ export default function ItineraryEditorPage() {
         });
       }
 
-      // Update the UI
       setGeoapifyByDate((prev) => ({
         ...prev,
         [newDate]: geoapifyPlaceId,
       }));
 
-      // Persist the change to the backend
       const res = await fetch(`/api/itinerary/${itineraryId}/days/${newDate}/items`, {
         method: 'POST',
         body: JSON.stringify({
@@ -173,7 +178,6 @@ export default function ItineraryEditorPage() {
       });
 
       if (!res.ok) {
-        // Revert the change if the request fails
         setGeoapifyByDate((prev) => {
           const updated = { ...prev };
           delete updated[newDate];
@@ -188,7 +192,7 @@ export default function ItineraryEditorPage() {
 
       setColorByDate((prev) => ({
         ...prev,
-        [newDate]: color,
+        [newDate]: color || "#72B8FF",
       }));
     }
 
@@ -263,6 +267,7 @@ export default function ItineraryEditorPage() {
             locationLabelByDate={locationLabelByDate}
             lastAddedDestination={lastAddedDestination}
             colorByDate={colorByDate}
+            onColorChange={handleColorChange}
           />
         </div>
       </div>

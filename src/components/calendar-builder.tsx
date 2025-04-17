@@ -16,6 +16,7 @@ interface CalendarBuilderProps {
   locationLabelByDate: Record<string, string>;
   colorByDate: Record<string, string>;
   lastAddedDestination: { destination: { name: string; location: string }, date: string } | null;
+  onColorChange: (date: string, color: string) => void;
 }
 
 export default function CalendarBuilder({
@@ -28,7 +29,8 @@ export default function CalendarBuilder({
   geoapifyByDate,
   locationLabelByDate,
   colorByDate,
-  lastAddedDestination
+  lastAddedDestination,
+  onColorChange,
 }: CalendarBuilderProps) {
   const [dateRange, setDateRange] = useState<string[]>([]);
 
@@ -107,6 +109,7 @@ export default function CalendarBuilder({
             color={colorByDate[date]}
             showPopup={lastAddedDestination?.date === date}
             popupContent={lastAddedDestination?.destination}
+            onColorChange={onColorChange}
           />
         ))}
       </div>

@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { GripVertical } from "lucide-react"; // or any icon lib you're using
+import { GripVertical } from "lucide-react";
 
 interface LocationComponentProps {
   geoapifyID: string;
   locationLabel: string;
   color?: string;
   date: string;
+  onColorChange: (date: string, color: string) => void;
 }
 
 const colorPalette = [
@@ -21,6 +22,7 @@ export default function LocationComponent({
   locationLabel,
   color,
   date,
+  onColorChange,
 }: LocationComponentProps) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(false);
@@ -81,6 +83,7 @@ export default function LocationComponent({
 
     if (res.ok) {
       setSelectedColor(newColor);
+      onColorChange(date, newColor);
     }
   };
 

@@ -67,13 +67,14 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const itineraryId = Number(context.params.id);
+  const { id } = await context.params;
+  const itineraryId = Number(id);
 
   try {
     await prisma.itinerary.delete({

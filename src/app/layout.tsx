@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import SessionProvider from "@/providers/session-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default async function RootLayout({
             <main className="flex-grow flex flex-col">{children}</main>
           </ThemeProvider>
         </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

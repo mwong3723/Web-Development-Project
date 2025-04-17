@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id.toString(),
           email: user.email,
-          name: user.name
+          name: user.name,
         };
       }
     })
@@ -50,8 +50,37 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
   },
+  callbacks: {
+    async session({ session, token }) {
+      
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+
+        try {
+          const user = await prisma.user.findUnique({
+            where: { id: parseInt(token.sub) },
+          });
+          
+          session.user.role = user?.role || "user";
+        } catch (error) {
+          console.error("Error fetching user role:", error);
+          session.user.role = "user"; // Fallback
+        }
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+      }
+      return token;
+    },
+  },
   session: {
     strategy: 'jwt'
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+export const auth = () => NextAuth(authOptions)

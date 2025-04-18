@@ -7,6 +7,7 @@ import { ArrowLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DestinationSidebar from "@/components/destination-sidebar";
 import DestinationCard from "@/components/destination-card";
+import AttractionSidebar from "@/components/attraction-sidebar";
 import CalendarBuilder from "@/components/calendar-builder";
 import { format } from "date-fns";
 
@@ -34,6 +35,7 @@ export default function ItineraryEditorPage() {
   const [colorByDate, setColorByDate] = useState<Record<string, string>>({});
   const [destinationsByDate, setDestinationsByDate] = useState<Record<string, Destination[]>>({});
   const [lastAddedDestination, setLastAddedDestination] = useState<{ destination: Destination, date: string } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchItinerary = async () => {
@@ -52,6 +54,24 @@ export default function ItineraryEditorPage() {
   useEffect(() => {
     if (isEditingTitle && inputRef.current) inputRef.current.focus();
   }, [isEditingTitle]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const calendarDayElements = document.querySelectorAll('[data-date]');
+      const clickedInside = Array.from(calendarDayElements).some((el) => el.contains(e.target as Node));
+  
+      if (!clickedInside) {
+        setSelectedDate(null);
+      }
+    };
+  
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);  
+
+  const handleSelectDate = (date: string) => {
+    setSelectedDate((prev) => (prev === date ? null : date));
+  };
 
   const handleTitleChange = async () => {
     const trimmed = itineraryTitle?.trim();
@@ -90,6 +110,20 @@ export default function ItineraryEditorPage() {
       ...prev,
       [date]: newColor,
     }));
+  
+    if (newColor === "") {
+      setGeoapifyByDate((prev) => {
+        const copy = { ...prev };
+        delete copy[date];
+        return copy;
+      });
+  
+      setLocationLabelByDate((prev) => {
+        const copy = { ...prev };
+        delete copy[date];
+        return copy;
+      });
+    }
   };
 
   const fetchDays = async () => {
@@ -217,7 +251,11 @@ export default function ItineraryEditorPage() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
+      {selectedDate && geoapifyByDate[selectedDate] ? (
+        <AttractionSidebar locationLabel={locationLabelByDate[selectedDate] || "this location"} />
+      ) : (
         <DestinationSidebar />
+      )}
         <div className="flex-1 h-full overflow-y-auto p-8">
           <Button variant="ghost" onClick={() => router.push("/itinerary-builder")} className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -268,6 +306,8 @@ export default function ItineraryEditorPage() {
             lastAddedDestination={lastAddedDestination}
             colorByDate={colorByDate}
             onColorChange={handleColorChange}
+            selectedDate={selectedDate}
+            onSelectDate={handleSelectDate}
           />
         </div>
       </div>

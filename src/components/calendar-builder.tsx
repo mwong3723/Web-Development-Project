@@ -18,6 +18,8 @@ interface CalendarBuilderProps {
   colorByDate: Record<string, string>;
   lastAddedDestination: { destination: { name: string; location: string }, date: string } | null;
   onColorChange: (date: string, color: string) => void;
+  selectedDate: string | null;
+  onSelectDate: (date: string) => void;
 }
 
 export default function CalendarBuilder({
@@ -32,6 +34,8 @@ export default function CalendarBuilder({
   colorByDate,
   lastAddedDestination,
   onColorChange,
+  selectedDate,
+  onSelectDate,
 }: CalendarBuilderProps) {
   const [dateRange, setDateRange] = useState<string[]>([]);
 
@@ -122,11 +126,11 @@ export default function CalendarBuilder({
                   destinations={destinationsByDate[date] || []}
                   geoapifyPlaceId={geoapifyByDate[date]}
                   locationLabel={locationLabelByDate?.[date] || ""}
-                  color={colorByDate[date]}
                   showPopup={lastAddedDestination?.date === date}
                   popupContent={lastAddedDestination?.destination}
-                  onColorChange={onColorChange}
-                />
+                  isSelected={selectedDate === date}
+                  onClick={onSelectDate}
+                />              
               ))}
               {Array.from({ length: emptyCells }).map((_, i) => (
                 <div key={`empty-day-${i}`} />

@@ -98,7 +98,10 @@ export default function LocationComponent({
     });
 
     if (res.ok) {
-      setIsDeleted(true);
+      if (res.ok) {
+        setIsDeleted(true);
+        onColorChange(date, "");
+      }      
     } else {
       console.error("Failed to delete itinerary day");
     }

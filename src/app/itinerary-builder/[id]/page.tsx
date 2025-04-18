@@ -55,20 +55,6 @@ export default function ItineraryEditorPage() {
     if (isEditingTitle && inputRef.current) inputRef.current.focus();
   }, [isEditingTitle]);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const calendarDayElements = document.querySelectorAll('[data-date]');
-      const clickedInside = Array.from(calendarDayElements).some((el) => el.contains(e.target as Node));
-  
-      if (!clickedInside) {
-        setSelectedDate(null);
-      }
-    };
-  
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);  
-
   const handleSelectDate = (date: string) => {
     setSelectedDate((prev) => (prev === date ? null : date));
   };

@@ -127,7 +127,7 @@ export default function LocationComponent({
         setNodeRef(el);
         componentRef.current = el;
       }}
-      className="absolute top-2 left-2 right-2 text-center text-sm font-semibold text-black px-2 py-4 rounded shadow transition"
+      className="w-full h-[calc(100%-6px)] my-[3px] text-center text-sm font-semibold text-black px-2 rounded shadow transition"
       style={{
         backgroundColor: selectedColor,
         opacity: isDragging ? 0.5 : 1,
@@ -136,7 +136,7 @@ export default function LocationComponent({
       data-geo={geoapifyID}
       onClick={() => setShowPalette(!showPalette)}
     >
-      <div className="relative flex items-center justify-center">
+      <div className="relative flex items-center justify-center h-full">
         <span className="mx-auto">{locationLabel}</span>
 
         <div

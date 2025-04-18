@@ -106,7 +106,13 @@ export default function CalendarBuilder({
 
         return (
           <div key={rowIndex} className="mb-4">
-            <DayBarRow dates={rowDates} />
+            <DayBarRow
+              dates={rowDates}
+              geoapifyByDate={geoapifyByDate}
+              locationLabelByDate={locationLabelByDate}
+              colorByDate={colorByDate}
+              onColorChange={onColorChange}
+            />
 
             <div className="grid grid-cols-4 gap-2">
               {rowDates.map((date) => (

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import CalendarDay from "@/components/calendar-day";
 import { useState, useEffect } from "react";
 import { format, parseISO, addDays } from "date-fns";
+import DayBarRow from "@/components/day-bar-row";
 
 interface CalendarBuilderProps {
   startDate: string;
@@ -17,6 +18,8 @@ interface CalendarBuilderProps {
   colorByDate: Record<string, string>;
   lastAddedDestination: { destination: { name: string; location: string }, date: string } | null;
   onColorChange: (date: string, color: string) => void;
+  selectedDate: string | null;
+  onSelectDate: (date: string) => void;
 }
 
 export default function CalendarBuilder({
@@ -31,6 +34,8 @@ export default function CalendarBuilder({
   colorByDate,
   lastAddedDestination,
   onColorChange,
+  selectedDate,
+  onSelectDate,
 }: CalendarBuilderProps) {
   const [dateRange, setDateRange] = useState<string[]>([]);
 
@@ -98,21 +103,42 @@ export default function CalendarBuilder({
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        {dateRange.map((date) => (
-          <CalendarDay
-            key={date}
-            date={date}
-            destinations={destinationsByDate[date] || []}
-            geoapifyPlaceId={geoapifyByDate[date]}
-            locationLabel={locationLabelByDate?.[date] || ""}
-            color={colorByDate[date]}
-            showPopup={lastAddedDestination?.date === date}
-            popupContent={lastAddedDestination?.destination}
-            onColorChange={onColorChange}
-          />
-        ))}
-      </div>
+      {Array.from({ length: Math.ceil(dateRange.length / 4) }).map((_, rowIndex) => {
+        const startIndex = rowIndex * 4;
+        const rowDates = dateRange.slice(startIndex, startIndex + 4);
+        const emptyCells = 4 - rowDates.length;
+
+        return (
+          <div key={rowIndex} className="mb-4">
+            <DayBarRow
+              dates={rowDates}
+              geoapifyByDate={geoapifyByDate}
+              locationLabelByDate={locationLabelByDate}
+              colorByDate={colorByDate}
+              onColorChange={onColorChange}
+            />
+
+            <div className="grid grid-cols-4 gap-2">
+              {rowDates.map((date) => (
+                <CalendarDay
+                  key={date}
+                  date={date}
+                  destinations={destinationsByDate[date] || []}
+                  geoapifyPlaceId={geoapifyByDate[date]}
+                  locationLabel={locationLabelByDate?.[date] || ""}
+                  showPopup={lastAddedDestination?.date === date}
+                  popupContent={lastAddedDestination?.destination}
+                  isSelected={selectedDate === date}
+                  onClick={onSelectDate}
+                />              
+              ))}
+              {Array.from({ length: emptyCells }).map((_, i) => (
+                <div key={`empty-day-${i}`} />
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -32,7 +32,11 @@ NEXTAUTH_SECRET="your_random_secret_key"
 GOOGLE_CLIENT_ID="your_google_client_id"
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
 
-GEOAPIFY_API_KEY="you_geoapifyr_api_key"
+GEOAPIFY_API_KEY="you_geoapify_api_key"
+
+# If you choose to seed the database with an admin account
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
 ```
 
 These values are used to configure the PostgreSQL database, Prisma, external APIs, and authentication flows for development.
@@ -44,9 +48,13 @@ These values are used to configure the PostgreSQL database, Prisma, external API
 ```bash
 docker compose up
 ```
-2. Sync the Prisma schema with the database schema:
+2. Sync the Prisma schema with the database schema (you may need to install prisma first, see below section):
 ```bash
 npx prisma db push
+```
+3. Optionally seed the database with an admin account:
+```bash
+npx prisma db seed
 ```
 
 ### Running the Development Server:
@@ -60,6 +68,7 @@ pnpm install
 # or
 bun install
 ```
+> You may need to include the `--legacy-peer-deps` flag
 2. Start the development server:
 ```bash
 npm run dev

@@ -80,7 +80,9 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.'
+
+Access the admin portal with http://localhost:3000/admin
 
 ## Additional Notes
 
